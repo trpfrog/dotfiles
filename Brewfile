@@ -32,13 +32,14 @@ cask "balenaetcher"
 cask "blackhole-2ch"
 cask "chromedriver"
 cask "discord"
-cask "docker"
 cask "firefox"
 cask "github"
 cask "google-chrome"
 cask "google-drive"
+cask "istat-menus"
 cask "jetbrains-toolbox"
 cask "karabiner-elements"
+cask "mos"
 cask "openineditor-lite"
 cask "openinterminal-lite"
 cask "qlmarkdown"
@@ -48,12 +49,14 @@ cask "skim"
 cask "typora"
 cask "visual-studio-code"
 cask "vlc"
+cask "zoom"
 
 cask "mactex-no-gui"
 
 mas "Affinity Designer", id: 824171161
 mas "Affinity Publisher", id: 881418622
 mas "Compressor", id: 424390742
+mas "CotEditor", id: 1024640650
 mas "Developer", id: 640199958
 mas "Evernote", id: 406056744
 mas "Final Cut Pro", id: 424389933

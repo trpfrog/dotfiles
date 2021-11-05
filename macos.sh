@@ -19,8 +19,8 @@ defaults write com.apple.finder ShowPathbar -bool true
 # 影を消す
 defaults write com.apple.screencapture disable-shadow -bool true
 # 保存場所の変更
-mkdir Screenshot
-defaults write com.apple.screencapture location ~/Screenshot
+mkdir ~/スクリーンショット
+defaults write com.apple.screencapture location ~/スクリーンショット
 
 
 # [お節介機能の解除]
