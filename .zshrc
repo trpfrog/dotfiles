@@ -46,19 +46,14 @@ export PATH="$HOME/.cargo/env:$PATH"
 # default editor
 export EDITOR=vim
 
-alias youtube-dl-audio=youtube-dl $0 -x -f "bestaudio" --audio-quality 0
+# youtube-dl bestaudio
+alias youtube-dl-audio='youtube-dl -x -f "bestaudio" --audio-quality 0'
 
-# Welcome
-function ckwb_random_tweet() {
-    twint -u 'prgckwb' -fr --limit 20 | shuf -n 1 | cut -c 57-
-}
-function ckwb_random_tweet_with_aa() {
-    echo " ∠  ‾ω ‾) < $(ckwb_random_tweet)"
-}
-alias ckwb=ckwb_random_tweet_with_aa
+# MATLAB
+alias matlab="/Applications/MATLAB_R2021b.app/bin/matlab -nosplash -nodesktop"
 
-echo ""
-echo " ∠  ‾ω ‾) < $(twint -u 'prgckwb' -fr --limit 20 | shuf -n 1 | cut -c 57-)"
+# OpenJDK
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
@@ -100,3 +95,11 @@ zinit light chrissicool/zsh-256color
 zinit ice compile'(pure|async).zsh' pick'async.zsh' src'pure.zsh'
 zinit light sindresorhus/pure
 PURE_PROMPT_SYMBOL='%B%F{3}❯%F{2}❯%F{6}❯%f%b'
+
+# Welcome
+# echo ""
+# if [ "$(networksetup -getairportnetwork en0)" = "Current Wi-Fi Network: UECWireless" ]; then
+#     echo " ∠  ‾ω ‾) < Hello"
+# else
+#     echo " ∠  ‾ω ‾) < $(twint -u 'prgckwb' -fr --limit 20 | shuf -n 1 | cut -c 57-)"
+# fi
