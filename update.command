@@ -4,6 +4,6 @@ brew update
 brew upgrade
 brew cleanup
 rustup update
-sudo tlmgr update --self --all
+# sudo tlmgr update --self --all
 echo 'Finished! [Enter to close]'
 read

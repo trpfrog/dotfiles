@@ -11,7 +11,10 @@ cd ~/dotfiles
 
 ln -fs .zshrc ~
 ln -fs .vimrc ~
+ln -fs .yabairc ~
+ln -fs .skhdrc ~
 ln -fs .gitignore_global ~
+ln -fs .latexmkrc ~
 git config --global core.excludesfile ~/.gitignore_global
 
 if [ "$(uname)" != "Darwin" ] ; then
