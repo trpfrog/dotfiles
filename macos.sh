@@ -45,6 +45,12 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 
 
+# [マウス]
+
+# カーソルの速度
+defaults write com.apple.mouse.scaling -float 2.5
+
+
 # [キーボード]
 
 # Capitalizeしない
@@ -62,7 +68,7 @@ defaults write com.apple.inputmethod.Kotoeri.JIMPrefFullWidthNumeralCharactersKe
 # Shift を押したときにカタカナが入力されるようにする
 defaults write com.apple.inputmethod.Kotoeri.JIMPrefShiftKeyActionKey -int 0
 # キーリピートの設定
-defaults write -g InitialKeyRepeat -int 10
+defaults write -g InitialKeyRepeat -int 30
 defaults write -g KeyRepeat -float 1.5
 
 # [その他]
