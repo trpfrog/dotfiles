@@ -53,6 +53,9 @@ cask "visual-studio-code"
 cask "vlc"
 cask "zoom"
 mas "1Password for Safari", id: 1569813296
+mas "Affinity Designer 2", id: 1616831348
+mas "Affinity Photo 2", id: 1616822987
+mas "Affinity Publisher 2", id: 1606941598
 mas "Compressor", id: 424390742
 mas "CotEditor", id: 1024640650
 mas "Developer", id: 640199958
@@ -67,6 +70,7 @@ mas "Logic Pro", id: 634148309
 mas "Microsoft Excel", id: 462058435
 mas "Microsoft PowerPoint", id: 462062816
 mas "Microsoft Word", id: 462054704
+mas "NAS Navigator2", id: 450664466
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Pixelmator Pro", id: 1289583905
