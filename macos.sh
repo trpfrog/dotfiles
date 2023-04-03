@@ -68,8 +68,8 @@ defaults write com.apple.inputmethod.Kotoeri.JIMPrefFullWidthNumeralCharactersKe
 # Shift を押したときにカタカナが入力されるようにする
 defaults write com.apple.inputmethod.Kotoeri.JIMPrefShiftKeyActionKey -int 0
 # キーリピートの設定
-defaults write -g InitialKeyRepeat -int 30
-defaults write -g KeyRepeat -float 1.5
+defaults write -g InitialKeyRepeat -int 15
+defaults write -g KeyRepeat -int 1
 
 # [その他]
 
