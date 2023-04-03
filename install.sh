@@ -1,7 +1,7 @@
 #!/bin/sh
 
-echo 'Install TrpFrog\'s environment'
-echo 'To continue, please enter Y'
+echo "Install TrpFrog's environment"
+echo "To continue, please enter Y"
 read x
 if [$x != "Y"] ; then
     exit 0
@@ -9,12 +9,11 @@ fi
 
 cd ~/dotfiles
 
-ln -fs .zshrc ~
-ln -fs .vimrc ~
-ln -fs .yabairc ~
-ln -fs .skhdrc ~
-ln -fs .gitignore_global ~
-ln -fs .latexmkrc ~
+ln -fs ./dotfiles/.zshrc ~
+ln -fs ./dotfiles/.vimrc ~
+ln -fs ./dotfiles/.skhdrc ~
+ln -fs ./dotfiles/.gitignore_global ~
+ln -fs ./dotfiles/.latexmkrc ~
 git config --global core.excludesfile ~/.gitignore_global
 
 if [ "$(uname)" != "Darwin" ] ; then
@@ -22,15 +21,19 @@ if [ "$(uname)" != "Darwin" ] ; then
 fi
 
 xcode-select --install
-sudo softwareupdate --install-rosetta
+sudo softwareupdate
 
 # Install homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-./.macos
-brew bundle
+./macos.sh
+source ~/.zshrc
 
-# Install zinit
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma-continuum/zinit/master/doc/install.sh)"
+# Install softwares
+brew bundle
+source ~/.zshrc
+
+# Open SFMono folder
+open "$(brew --prefix sfmono-square)/share/fonts"
 
 # Install jlisting.sty
 sudo wget -P $(dirname $(kpsewhich listings.sty)) http://teacher.nagano-nct.ac.jp/fujita/files/jlisting.sty

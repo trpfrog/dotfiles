@@ -1,5 +1,8 @@
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
+
+export  PATH="/opt/homebrew/bin:$PATH"
+
 # Ruby
 # export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 export  PATH="/opt/homebrew/opt/ruby/bin:$PATH"
