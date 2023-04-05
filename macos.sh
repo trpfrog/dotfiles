@@ -13,13 +13,13 @@ defaults write com.apple.TextEdit RichText -bool false
 # Pathバーを表示
 defaults write com.apple.finder ShowPathbar -bool true
 
-defaults write com.apple.finder FK_DefaultIconViewSettings arrangeBy -string kind
-
 
 # [スクリーンショット]
 
 # 影を消す
 defaults write com.apple.screencapture disable-shadow -bool true
+# フローティングサムネイルを消す
+defaults write com.apple.screencapture show-thumbnail -bool false
 # 保存場所の変更
 mkdir ~/スクリーンショット
 defaults write com.apple.screencapture location ~/スクリーンショット
