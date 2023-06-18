@@ -1,30 +1,15 @@
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 
-export  PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
+
+# asdf (tool version manager)
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 # Ruby
 # export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 export  PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export  PATH="/opt/homebrew/lib/ruby/gems/3.2.0/bin:$PATH"
-
-# zprezto
-# source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-
-# Node.js
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-# Python
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
-# alias pip=pip3
-# alias python=python3
-# export PATH="/Users/trpfrog/Library/Python/3.9/bin:$PATH"
-
 
 # C++ Libraries
 export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/opt/homebrew/include
@@ -49,10 +34,7 @@ export PATH="$GOPATH/bin:$PATH"
 update_twitter_status() { twurl tweet -d 'status='$1 | echo 'posted'}
 alias tweet='update_twitter_status'
 
-# Node.js
-export PATH="$HOME/.nodebrew/current/bin:$PATH"
-
-#sbin
+# sbin
 export PATH="/opt/homebrew/sbin:$PATH"
 
 # rust
@@ -69,9 +51,6 @@ alias matlab="/Applications/MATLAB_R2021b.app/bin/matlab -nosplash -nodesktop 2>
 
 # OpenJDK
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-
-# pyenv-virtualenv
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
 
 function use_llvm_clang() {
   export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
@@ -91,6 +70,15 @@ fucntion swpunc() {
 
 # ChatGPT
 alias chatgpt-cli="chatgpt-cli --settings=/Users/trpfrog/dotfiles/node_chatgpt.settings.js"
+
+# Whisper
+alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-large.bin"
+
+# GHCup (Haskell)
+[ -f "/Users/trpfrog/.ghcup/env" ] && source "/Users/trpfrog/.ghcup/env" # ghcup-env
+
+# GitHub Copilot CLI
+eval "$(github-copilot-cli alias -- "$0")"
 
 # Welcome
 # echo ""
