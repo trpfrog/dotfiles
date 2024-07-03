@@ -1,23 +1,29 @@
-#!/bin/sh
+#!/bin/zsh
 
 echo "Install TrpFrog's environment"
 echo "To continue, please enter Y"
 read x
 if [$x != "Y"] ; then
-    exit 0
+  exit 0
 fi
 
 cd ~/dotfiles
 
-ln -fs ./dotfiles/.zshrc ~
-ln -fs ./dotfiles/.vimrc ~
-ln -fs ./dotfiles/.skhdrc ~
-ln -fs ./dotfiles/.gitignore_global ~
-ln -fs ./dotfiles/.latexmkrc ~
+# Create symbolic links
+symlink_targets=(
+  .zshrc
+  .vimrc
+  .gitignore_global
+  .latexmkrc
+)
+for file in ${symlink_targets[@]}; do
+    ln -fs ~/dotfiles/$file ~
+done
+
 git config --global core.excludesfile ~/.gitignore_global
 
 if [ "$(uname)" != "Darwin" ] ; then
-    exit 0
+  exit 0
 fi
 
 xcode-select --install
@@ -25,12 +31,14 @@ sudo softwareupdate
 
 # Install homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-./macos.sh
 source ~/.zshrc
 
 # Install softwares
 brew bundle
 source ~/.zshrc
+
+# Set some configurations
+./macos.sh
 
 # Open SFMono folder
 open "$(brew --prefix sfmono-square)/share/fonts"

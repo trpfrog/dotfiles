@@ -1,0 +1,86 @@
+% \documentclass[uplatex,dvipdfmx,11pt]{jsarticle}
+% \usepackage[dvipdfmx]{graphicx}
+
+\usepackage{
+    amsmath,
+    ascmac,
+    mathtools,
+    here,
+    siunitx,
+    amssymb,
+    type1cm,
+    cases,
+    pxrubrica,
+    dcolumn,
+    multirow,
+    url,
+    array,
+    algorithm,
+    algorithmic,
+    ulem,
+    titlesec,
+    indentfirst,
+    physics,
+    arydshln,
+}
+
+
+\newcommand{\dydx}[2]{\frac{\dd #1}{\dd #2}}
+\newcommand{\bigbracket}[1]{\left(#1\right)} %軽率にデカい括弧を使いたい時に
+\newcommand{\ct}[1]{\multicolumn{1}{c}{#1}} %表中の文字のcenteringに使う
+\newcommand{\SIM}[2]{#1\,\si{#2}}
+\newcommand{\Hline}{\noalign{\hrule height 1pt}}
+\newcommand{\napier}{\mathrm{e}}
+\newcommand{\circnum}[1]{\,\raise0.2ex\hbox{\textcircled{\scriptsize{#1}}}\,}
+\newcommand{\vecbf}[1]{\mbox{\boldmath $\mathrm{#1}$}}
+
+% Darkmode
+% \usepackage{xcolor}
+% \pagecolor[rgb]{0.17,0.18,0.21}
+% \color[rgb]{0.9,0.9,0.9}
+
+\usepackage{listings}
+\lstset{
+    basicstyle={\ttfamily},
+    identifierstyle={\small},
+    commentstyle={\smallitshape},
+    keywordstyle={\small\bfseries},
+    ndkeywordstyle={\small},
+    stringstyle={\small\ttfamily},
+    frame={tb},
+    breaklines=true,
+    columns=[l]{fullflexible},
+    numbers=left,
+    xrightmargin=0zw,
+    xleftmargin=3zw,
+    numberstyle={\scriptsize},
+    stepnumber=1,
+    lineskip=-0.5ex
+}
+
+\usepackage{geometry}
+\geometry{
+    top=30truemm,
+    bottom=20truemm,
+    left=25truemm,
+    right=25truemm
+}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\renewcommand{\labelitemii}{$\circ$}
+
+\let \defaultForall \forall                 % let命令でマクロをコピー
+\renewcommand{\forall}{{{}^\defaultForall}} % コピーしたマクロでrenewcommandする
+
+\let \defaultExists \exists
+\renewcommand{\exists}{{{}^\defaultExists}}
+
+\let \defaultDd \dd
+\renewcommand{\dd}{{\,\defaultDd}}
+
+% 行間や段落間の調整
+\setlength{\parskip}{0.7em}
+\renewcommand{\baselinestretch}{1.1}
+
+\bibliographystyle{jplain}

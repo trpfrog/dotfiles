@@ -1,15 +1,17 @@
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
-
+# Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/Users/trpfrog/commands:$PATH"
 
-# asdf (tool version manager)
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+# mise
+eval "$(mise activate zsh)"
 
 # Ruby
 # export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-export  PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export  PATH="/opt/homebrew/lib/ruby/gems/3.2.0/bin:$PATH"
+# export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+# export PATH="/opt/homebrew/lib/ruby/gems/3.2.0/bin:$PATH"
+# export PATH="/Users/trpfrog/.local/share/mise/installs/ruby/3.2.3/lib/ruby/gems/3.2.0:$PATH"
+# export PATH="/Users/trpfrog/.local/share/gem/ruby/3.2.0:$PATH"
 
 # C++ Libraries
 export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/opt/homebrew/include
@@ -39,6 +41,7 @@ export PATH="/opt/homebrew/sbin:$PATH"
 
 # rust
 export PATH="$HOME/.cargo/env:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # default editor
 export EDITOR=vim
@@ -72,13 +75,13 @@ fucntion swpunc() {
 alias chatgpt-cli="chatgpt-cli --settings=/Users/trpfrog/dotfiles/node_chatgpt.settings.js"
 
 # Whisper
-alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-large.bin"
+alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-large-v3.bin"
 
 # GHCup (Haskell)
 [ -f "/Users/trpfrog/.ghcup/env" ] && source "/Users/trpfrog/.ghcup/env" # ghcup-env
 
-# GitHub Copilot CLI
-eval "$(github-copilot-cli alias -- "$0")"
+# pandoc
+alias pandoc-tex='pandoc --pdf-engine=latexmk --pdf-engine-opt="-r" --pdf-engine-opt="/Users/trpfrog/dotfiles/uplatex-dpx.latexmk" -H "/Users/trpfrog/dotfiles/pandoc-template.tex"'
 
 # Welcome
 # echo ""
@@ -90,5 +93,45 @@ eval "$(github-copilot-cli alias -- "$0")"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/trpfrog/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/trpfrog/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/trpfrog/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/trpfrog/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+# Mojo
+export MODULAR_HOME="/Users/trpfrog/.modular"
+export PATH="/Users/trpfrog/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
+
+# Cloudinary
+export CLOUDINARY_URL=cloudinary://198791233626164:SM0yhQRcqYrDLcwYfgr7glne0MM@trpfrog
+
+# 1Password CLI
+source /Users/trpfrog/.config/op/plugins.sh
+
+# zoxide
+eval "$(zoxide init zsh)"
+
+alias git-rsync='rsync -avz -C --filter=":- .gitignore" --exclude ".git" --exclude-from ~/dotfiles/.gitignore_global --verbose'
+
+# fzf (Ctrl+t for searching cd file, Ctrl+r for searching history)
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+function ghq-fzf() {
+  local src=$(ghq list | fzf --preview "ls -laTp $(ghq root)/{} | tail -n+4 | awk '{print \$9\"/\"\$6\"/\"\$7 \" \" \$10}'")
+  if [ -n "$src" ]; then
+    BUFFER="cd $(ghq root)/$src"
+    zle accept-line
+  fi
+  zle -R -c
+}
+zle -N ghq-fzf
+bindkey '^]' ghq-fzf
+
+
+[[ -f "$HOME/fig-export/dotfiles/dotfile.zsh" ]] && builtin source "$HOME/fig-export/dotfiles/dotfile.zsh"
+alias "??"="cw ai"
+
+# Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
+

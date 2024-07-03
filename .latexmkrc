@@ -8,3 +8,5 @@ $bibtex           = 'upbibtex';
 $dvipdf           = 'dvipdfmx %O -o %D %S';$pdf_mode         = 3;
 # index
 $makeindex        = 'mendex %O -o %D %S';
+# viewer
+$pdf_previewer    = 'open -a Skim';
