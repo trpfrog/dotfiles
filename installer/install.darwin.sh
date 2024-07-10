@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 echo "Install TrpFrog's environment"
 echo "To continue, please enter Y"
@@ -7,7 +7,7 @@ if [$x != "Y"] ; then
   exit 0
 fi
 
-cd ~/dotfiles
+cd ~/dotfiles/config
 
 # Create symbolic links
 symlink_targets=(
@@ -17,7 +17,7 @@ symlink_targets=(
   .latexmkrc
 )
 for file in ${symlink_targets[@]}; do
-    ln -fs ~/dotfiles/$file ~
+    ln -fs ~/dotfiles/config/$file ~
 done
 
 git config --global core.excludesfile ~/.gitignore_global

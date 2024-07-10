@@ -1,9 +1,19 @@
 # dotfiles
 
-trpfrog's dotfiles for macOS
+trpfrog's dotfiles for macOS and Linux.
 
 ## Installation
 
+First, clone this repository to **your home directory**.
+
 ```bash
+cd ~
+git clone https://github.com/trpfrog/dotfiles.git
+```
+
+Then, run the install script.
+
+```bash
+cd ~/dotfiles/config
 ./scripts/install.sh
 ```

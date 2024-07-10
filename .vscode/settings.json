@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    ".zshrc.*": "shellscript",
+    ".zshenv.*": "shellscript"
+  }
+}

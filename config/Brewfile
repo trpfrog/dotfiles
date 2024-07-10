@@ -35,6 +35,7 @@ brew "ruff"
 brew "rustup-init"
 brew "rye"
 brew "selenium-server", restart_service: true
+brew "sheldon"
 brew "ssh-copy-id"
 brew "trash-cli"
 brew "tree"

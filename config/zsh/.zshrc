@@ -9,6 +9,9 @@
 # Emacs key bindings
 bindkey -e
 
+# sheldon
+eval "$(sheldon source)"
+
 # mise
 eval "$(mise activate zsh)"
 
@@ -33,11 +36,6 @@ function ghq-fzf() {
 }
 zle -N ghq-fzf
 bindkey '^]' ghq-fzf
-
-alias "??"="cw ai"
-
-# sheldon
-eval "$(sheldon source)"
 
 ###############################################################################
 
