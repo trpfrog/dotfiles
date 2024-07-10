@@ -1,0 +1,49 @@
+# .zshrc.darwin
+# Mac 用の設定を記述するファイル
+
+###############################################################################
+
+# Remove dotfiles
+function remove_dotfiles() {
+  /usr/bin/zip --delete $@ "*__MACOSX*" "*.DS_Store"
+}
+alias undot='remove_dotfiles'
+
+function use_llvm_clang() {
+  export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+  export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+}
+
+export PURE_DISPLAY_ENV_NAME="Mac"
+
+# ピリカンと句読点の切り替え (switch-punctuation)
+function switch_kotoeri_punctuation() {
+  x=$(defaults read com.apple.inputmethod.Kotoeri JIMPrefPunctuationTypeKey)
+  if [[ $x == 0 ]] then
+    defaults write com.apple.inputmethod.Kotoeri JIMPrefPunctuationTypeKey -int 3
+  else
+    defaults write com.apple.inputmethod.Kotoeri JIMPrefPunctuationTypeKey -int 0
+  fi
+  killall -HUP JapaneseIM-RomajiTyping
+}
+alias swpunc='switch_kotoeri_punctuation'
+
+# iTerm2 shell integration
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# 1Password CLI
+test -e $HOME/.config/op/plugins.sh && source $HOME/.config/op/plugins.sh
+
+# youtube-dl bestaudio
+alias youtube-dl-audio='youtube-dl -x -f "bestaudio" --audio-quality 0'
+
+# Whisper
+alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-large-v3.bin"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/trpfrog/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/trpfrog/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/trpfrog/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/trpfrog/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
