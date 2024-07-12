@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 function is_mac() { [[ `uname` = "Darwin" ]] }
 function is_linux() { [[ `uname` = "Linux" ]] }
