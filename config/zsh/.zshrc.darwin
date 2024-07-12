@@ -15,8 +15,6 @@ function use_llvm_clang() {
   export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 }
 
-export PURE_DISPLAY_ENV_NAME="Mac"
-
 # ピリカンと句読点の切り替え (switch-punctuation)
 function switch_kotoeri_punctuation() {
   x=$(defaults read com.apple.inputmethod.Kotoeri JIMPrefPunctuationTypeKey)
