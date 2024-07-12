@@ -1,7 +1,0 @@
-Next Steps:
- - Add update.sh to the login items
- - Replace old zinit settings in .zshrc with new one
- - If 'brew bundle' doesn't work for mas, try install_mas.py.
- - Download logi options+
- - To use homebrew g++, execute 'ls -l /opt/homebrew/bin | grep g++', 
-   then execute 'sudo ln -s /opt/homebrew/bin/g++-{num} /usr/local/bin/g++'

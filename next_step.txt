@@ -1,0 +1,4 @@
+Next Steps:
+ - Add update.command to the login items
+ - To use homebrew g++, execute 'ls -l /opt/homebrew/bin | grep g++', 
+   then execute 'sudo ln -s /opt/homebrew/bin/g++-{num} /usr/local/bin/g++'
