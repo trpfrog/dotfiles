@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  dotfiles:
+    build: .
+    environment:
+      - PURE_DISPLAY_ENV_NAME=Debug Dotfiles
+    volumes:
+      - .:/root/dotfiles:ro
+    tty: true
