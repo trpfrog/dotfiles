@@ -55,7 +55,6 @@ if is_mac ; then
   if ! type brew > /dev/null 2>&1 ; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
-  brew bundle
 fi
 
 # Update apt
@@ -65,6 +64,8 @@ fi
 
 # Open SFMono folder
 if is_mac ; then
+  brew tap delphinus/sfmono-square
+  brew install sfmono-square
   open "$(brew --prefix sfmono-square)/share/fonts/*"
 fi
 
