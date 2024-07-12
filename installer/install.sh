@@ -1,5 +1,12 @@
 #!/bin/zsh
 
+function is_mac() { [[ `uname` = "Darwin" ]] }
+function is_linux() { [[ `uname` = "Linux" ]] }
+
+if ! is_mac && ! is_linux ; then
+  echo "Warning: trpfrog/dotfiles only supports macOS and Linux"
+fi
+
 # if $SHELL does not end with zsh, exit
 if [[ $SHELL != "*/zsh" ]]; then
   echo "Please change your shell to zsh"
@@ -13,53 +20,59 @@ if [$x != "Y"] ; then
   exit 0
 fi
 
-# symbolic links
-DOTFILES_ROOT="$HOME/dotfiles"
-. $DOTFILES_ROOT/bin/ln.sh
+function symlink() {
+  DOTFILES_ROOT="$HOME/dotfiles"
+  symlink_targets=(
+    config/zsh/.zshenv
+    config/zsh/.zshrc
+    config/.vimrc
+    config/.latexmkrc
+  )
+  for file in ${symlink_targets[@]}; do
+      ln -fs $DOTFILES_ROOT/$file ~
+  done
+  ln -fs $DOTFILES_ROOT/config/sheldon/plugins.toml $HOME/.config/sheldon
+}
+symlink()
 
+# Load environment variables
 source ~/.zshenv
-git config --global core.excludesfile ~/.gitignore_global
 
-if [ "$(uname)" != "Darwin" ] ; then
+# Xcode Command Line Tools
+if is_mac ; then
   xcode-select --install
   sudo softwareupdate
+fi
 
-  # Install homebrew
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  source ~/.zshrc  
-
-  # Install softwares
+# Homebrew
+if is_mac ; then
+  # if `brew` command is not exists, install Homebrew
+  if ! type brew > /dev/null 2>&1 ; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
   brew bundle
+fi
 
-  # Open SFMono folder
+# Open SFMono folder
+if is_mac ; then
   open "$(brew --prefix sfmono-square)/share/fonts/*"
+fi
 
-elif [ "$(uname)" != "Linux" ] ; then
-  sudo apt update
-  sudo apt upgrade
-
-  # Install sheldon
+# Install sheldon
+if is_mac ; then
+  brew install sheldon
+elif is_linux ; then
   curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
       | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
 fi
 
-source ~/.zshrc
+# Apply global gitignore
+git config --global core.excludesfile $DOTFILES_ROOT/config/.gitignore_global
 
 # Set some configurations
-. $DOTFILES_ROOT/bin/macos.sh
-
-
-echo "Do you want to install LaTeX? [y/N]"
-read x
-if [ $x = "y" ]; then
-  sudo apt install texlive-full
-  # Install jlisting.sty
-  sudo wget -P $(dirname $(kpsewhich listings.sty)) http://teacher.nagano-nct.ac.jp/fujita/files/jlisting.sty
-  sudo mktexlsr
+if is_mac ; then
+  source $DOTFILES_ROOT/bin/macos.sh
 fi
 
-# 環境ごとの設定 (.zshrc.darwin, .zshrc.linux)
-UNAME_LOWERCASE=${$(uname):l}
-[ -f $DOTFILES_ROOT/installer/install.${UNAME_LOWERCASE}.sh ] && . $DOTFILES_ROOT/installer/install.${UNAME_LOWERCASE}.sh
-
+source ~/.zshrc
 cat next_step.txt
