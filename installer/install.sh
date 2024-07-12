@@ -9,7 +9,7 @@ if ! is_mac && ! is_linux ; then
 fi
 
 # if $SHELL does not zsh, exit
-if [[ $SHELL != "/bin/zsh" ]] ; then
+if [[ ! $SHELL =~ /zsh$ ]] ; then
   echo "Warning: Please change your shell to zsh"
   exit 1
 fi
@@ -17,7 +17,7 @@ fi
 echo "Install TrpFrog's environment"
 echo "To continue, please enter Y"
 read x
-if [$x != "Y"] ; then
+if [[ $x != Y ]] ; then
   exit 0
 fi
 
