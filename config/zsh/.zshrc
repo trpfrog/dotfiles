@@ -40,11 +40,11 @@ bindkey '^]' ghq-fzf
 ###############################################################################
 
 # git 管理しないローカル設定 ($ZDOTDIR とこのディレクトリのどちらに置いても良い)
-[ -f $DOTFILES_ZSH_DIR/.zshrc.local ] && . $DOTFILES_ZSH_DIR/.zshrc.local
-[ -f $ZDOTDIR/.zshrc.local ] && . $ZDOTDIR/.zshrc.local
+[ -f $DOTFILES_ZSH_DIR/.zshrc.local ] && source $DOTFILES_ZSH_DIR/.zshrc.local
+[ -f $ZDOTDIR/.zshrc.local ] && source $ZDOTDIR/.zshrc.local
 
 # 環境ごとの設定 (.zshrc.darwin, .zshrc.linux)
 UNAME_LOWERCASE=${$(uname):l}
-[ -f $DOTFILES_ZSH_DIR/.zshrc.$UNAME_LOWERCASE ] && . $DOTFILES_ZSH_DIR/.zshrc.$UNAME_LOWERCASE
+[ -f $DOTFILES_ZSH_DIR/.zshrc.$UNAME_LOWERCASE ] && source $DOTFILES_ZSH_DIR/.zshrc.$UNAME_LOWERCASE
 
 ###############################################################################
