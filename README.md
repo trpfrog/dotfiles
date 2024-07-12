@@ -26,7 +26,7 @@ Run the install script.
 apt update
 apt install -y git zsh
 chsh -s $(which zsh)
-~/dotfiles/installer/install.sh
+~/dotfiles/install.sh
 ```
 
 ## 🛠️ Debug
