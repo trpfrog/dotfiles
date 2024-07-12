@@ -29,6 +29,24 @@ chsh -s $(which zsh)
 ~/dotfiles/install.sh
 ```
 
+## 🐸 Scripts
+
+### `install.sh`
+
+This script installs the tools and configurations.
+
+### `install.personal.sh`
+
+This script installs the personal configurations.
+
+### `bin/deploy.sh`
+
+This script creates symbolic links to the home directory.
+
+### `bin/macos.sh`
+
+This script installs configurations for macOS.
+
 ## 🛠️ Debug
 
 This repository includes docker-compose file for debugging.

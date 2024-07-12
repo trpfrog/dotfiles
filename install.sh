@@ -21,27 +21,12 @@ if [[ $x != Y ]] ; then
   exit 0
 fi
 
-################################################################
-
 # Symlink dotfiles
 DOTFILES_ROOT="$HOME/dotfiles"
-symlink_targets=(
-  config/zsh/.zshenv
-  config/zsh/.zshrc
-  config/.vimrc
-  config/.latexmkrc
-)
-for file in ${symlink_targets[@]}; do
-    ln -fs $DOTFILES_ROOT/$file ~
-done
-
-mkdir -p $HOME/.config/sheldon
-ln -fs $DOTFILES_ROOT/config/sheldon/plugins.toml $HOME/.config/sheldon
+source $DOTFILES_ROOT/bin/deploy.sh
 
 # Load environment variables
 source $HOME/.zshenv
-
-################################################################
 
 # Xcode Command Line Tools
 if is_mac ; then
@@ -108,9 +93,6 @@ if ! type ghq > /dev/null 2>&1 ; then
     go install github.com/x-motemen/ghq@latest
   fi
 fi
-
-# Apply global gitignore
-git config --global core.excludesfile $DOTFILES_ROOT/config/.gitignore_global
 
 # Set some configurationss
 if is_mac ; then
