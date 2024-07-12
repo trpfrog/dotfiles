@@ -5,11 +5,12 @@ function is_linux() { [[ `uname` = "Linux" ]] }
 
 if ! is_mac && ! is_linux ; then
   echo "Warning: trpfrog/dotfiles only supports macOS and Linux"
+  exit 1
 fi
 
-# if $SHELL does not end with zsh, exit
-if [[ $SHELL != "*/zsh" ]]; then
-  echo "Please change your shell to zsh"
+# if $SHELL does not zsh, exit
+if [[ $SHELL != "/bin/zsh" ]] ; then
+  echo "Warning: Please change your shell to zsh"
   exit 1
 fi
 
