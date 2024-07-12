@@ -14,6 +14,5 @@ git clone https://github.com/trpfrog/dotfiles.git
 Then, run the install script.
 
 ```bash
-cd ~/dotfiles/config
-./scripts/install.sh
+~/dotfiles/installer/install.sh
 ```
