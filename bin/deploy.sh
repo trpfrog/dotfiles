@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 function is_mac() { [[ `uname` = "Darwin" ]] }
 
 DOTFILES_ROOT="$HOME/dotfiles"
