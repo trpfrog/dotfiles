@@ -20,7 +20,11 @@ git config --global core.excludesfile $DOTFILES_ROOT/config/.gitignore_global
 # Xcode
 if is_mac ; then
   # Change default template
-  ln -fs $DOTFILES_ROOT/config/xcode/IDETemplateMacros.plist ~/Library/Developer/Xcode/UserData/
+  LN_TO=~/Library/Developer/Xcode/UserData/
+  mkdir -p $LN_TO
+  ln -fs $DOTFILES_ROOT/config/xcode/IDETemplateMacros.plist $LN_TO
   # Add theme using SFMono Square
-  ln -fs $DOTFILES_ROOT/config/xcode/'Default (Dark, JA).xccolortheme' ~/Library/Developer/Xcode/UserData/FontAndColorThemes/
+  LN_TO=~/Library/Developer/Xcode/UserData/FontAndColorThemes/
+  mkdir -p $LN_TO
+  ln -fs $DOTFILES_ROOT/config/xcode/'Default (Dark, JA).xccolortheme' $LN_TO
 fi
