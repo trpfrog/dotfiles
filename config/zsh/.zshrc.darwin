@@ -32,10 +32,6 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # 1Password CLI
 test -e $HOME/.config/op/plugins.sh && source $HOME/.config/op/plugins.sh
-
-# youtube-dl bestaudio
-alias youtube-dl-audio='youtube-dl -x -f "bestaudio" --audio-quality 0'
-
 # Whisper
 alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-large-v3.bin"
 
@@ -45,3 +41,6 @@ if [ -f '/Users/trpfrog/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Use
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/trpfrog/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/trpfrog/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
+# Always prioritize Homebrew
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/sbin:$PATH"
