@@ -20,10 +20,12 @@ fi
 # GHCup (Haskell)
 [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
 
-# zoxide
-# eval "$(zoxide init zsh)"
-
 alias git-rsync='rsync -avz -C --filter=":- .gitignore" --exclude ".git" --exclude-from ~/dotfiles/.gitignore_global --verbose'
+
+# color grep
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
 
 # fzf (Ctrl+t for searching cd file, Ctrl+r for searching history)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
