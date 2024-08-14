@@ -26,6 +26,9 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export GOPATH=$HOME/go
 export PATH="$GOPATH/bin:$PATH"
 
+# zsh
+export ZDOTDIR=${ZDOTDIR:-$HOME}
+
 ###############################################################################
 
 # git 管理しないローカル設定 ($ZDOTDIR とこのディレクトリのどちらに置いても良い)
