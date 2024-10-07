@@ -41,6 +41,16 @@ function ghq-fzf() {
 zle -N ghq-fzf
 bindkey '^]' ghq-fzf
 
+
+function git-branch-fzf() {
+  [ ! -d .git ] && return
+  git branch --list | cut -c 3- \
+    | fzf --preview "git log --pretty=format:'%h %cd %s' --date=format:'%Y-%m-%d %H:%M' {}" \
+    | xargs git checkout
+}
+zle -N git-branch-fzf
+bindkey '^[' git-branch-fzf
+
 ###############################################################################
 
 # git 管理しないローカル設定 ($ZDOTDIR とこのディレクトリのどちらに置いても良い)
