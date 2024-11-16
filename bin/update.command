@@ -14,7 +14,7 @@ isCommandAvailable() {
   command -v $1 > /dev/null 2>&1
 }
 
-countdown 10
+countdown 20
 
 if isCommandAvailable brew ; then
   brew update
