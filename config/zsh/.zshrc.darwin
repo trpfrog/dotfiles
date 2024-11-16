@@ -44,3 +44,5 @@ if [ -f '/Users/trpfrog/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then .
 # Always prioritize Homebrew
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/sbin:$PATH"
+## Homebrew curl
+export PATH="/opt/homebrew/opt/curl/bin:$PATH"
