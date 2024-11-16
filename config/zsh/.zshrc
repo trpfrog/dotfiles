@@ -12,11 +12,6 @@ bindkey -e
 # sheldon
 eval "$(sheldon source)"
 
-# mise
-if type mise > /dev/null 2>&1 ; then
-  eval "$(mise activate zsh)"
-fi
-
 # GHCup (Haskell)
 [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
 
