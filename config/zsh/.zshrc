@@ -6,6 +6,11 @@
 
 ###############################################################################
 
+# load path
+export DOTFILES_ROOT="$HOME/dotfiles"
+export DOTFILES_ZSH_DIR="$DOTFILES_ROOT/config/zsh"
+source $DOTFILES_ZSH_DIR/.zshrc.path
+
 # Emacs key bindings
 bindkey -e
 

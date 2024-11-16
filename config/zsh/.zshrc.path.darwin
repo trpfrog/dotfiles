@@ -1,4 +1,4 @@
-# .zshenv.darwin
+# .zshrc.path.darwin
 # Mac 用の環境変数を設定するファイル
 
 ###############################################################################
@@ -26,3 +26,10 @@ export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 # Mojo
 export MODULAR_HOME="/Users/trpfrog/.modular"
 export PATH="/Users/trpfrog/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
+
+# Homebrew
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/sbin:$PATH"
+
+## Homebrew curl
+export PATH="/opt/homebrew/opt/curl/bin:$PATH"

@@ -1,14 +1,10 @@
-# .zshenv
+# .zshrc.path
 # 環境変数などを管理するファイル
 # このファイルでは特定の環境に依存しない環境変数を提供する。
-# Mac や Linux によって異なる環境変数は .zshenv.darwin や .zshenv.linux に記述する。
-# Git で管理しないローカル設定は、このディレクトリに .zshenv.local を作り記述する。
+# Mac や Linux によって異なる環境変数は .zshrc.path.darwin や .zshrc.path.linux に記述する。
+# Git で管理しないローカル設定は、このディレクトリに .zshrc.path.local を作り記述する。
 
 ###############################################################################
-
-# このリポジトリのルートディレクトリを指定する
-export DOTFILES_ROOT="$HOME/dotfiles"
-export DOTFILES_ZSH_DIR="$DOTFILES_ROOT/config/zsh"
 
 # Default editor
 export EDITOR=vim
@@ -37,12 +33,12 @@ export OPENAI_API_KEY="op://Private/OpenAI API Key/credential"
 ###############################################################################
 
 # git 管理しないローカル設定 ($ZDOTDIR とこのディレクトリのどちらに置いても良い)
-[ -f $DOTFILES_ZSH_DIR/.zshenv.local ] && source $DOTFILES_ZSH_DIR/.zshenv.local
-[ -f $ZDOTDIR/.zshenv.local ] && source $ZDOTDIR/.zshenv.local
+[ -f $DOTFILES_ZSH_DIR/.zshrc.path.local ] && source $DOTFILES_ZSH_DIR/.zshrc.path.local
+[ -f $ZDOTDIR/.zshrc.path.local ] && source $ZDOTDIR/.zshrc.path.local
 
-# 環境ごとの設定 (.zshenv.darwin, .zshenv.linux)
+# 環境ごとの設定 (.zshrc.path.darwin, .zshrc.path.linux)
 UNAME_LOWERCASE=${$(uname):l}
-[ -f $DOTFILES_ZSH_DIR/.zshenv.$UNAME_LOWERCASE ] && source $DOTFILES_ZSH_DIR/.zshenv.$UNAME_LOWERCASE
+[ -f $DOTFILES_ZSH_DIR/.zshrc.path.$UNAME_LOWERCASE ] && source $DOTFILES_ZSH_DIR/.zshrc.path.$UNAME_LOWERCASE
 
 ###############################################################################
 
@@ -52,5 +48,8 @@ export PURE_PROMPT_SYMBOL="${PURE_DISPLAY_ENV_NAME}%B%F{3}❯%F{2}❯%F{6}❯%f%
 
 # mise
 if type mise > /dev/null 2>&1 ; then
-  eval "$(mise activate zsh)"
+  eval "$(mise activate zsh --shims)"
+  if [[ -o interactive ]] ; then
+    eval "$(mise activate zsh)"
+  fi
 fi

@@ -26,7 +26,7 @@ DOTFILES_ROOT="$HOME/dotfiles"
 source $DOTFILES_ROOT/bin/deploy.sh
 
 # Load environment variables
-source $HOME/.zshenv
+source $DOTFILES_ROOT/config/zsh/.zshrc.path
 
 # Xcode Command Line Tools
 if is_mac ; then

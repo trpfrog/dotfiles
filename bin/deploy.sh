@@ -4,7 +4,6 @@ function is_mac() { [[ `uname` = "Darwin" ]] }
 
 DOTFILES_ROOT="$HOME/dotfiles"
 symlink_targets=(
-  config/zsh/.zshenv
   config/zsh/.zshrc
   config/.vimrc
   config/.latexmkrc
