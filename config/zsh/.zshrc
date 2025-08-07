@@ -14,6 +14,17 @@ source $DOTFILES_ZSH_DIR/.zshrc.path
 # Enable comment on interactive shell
 setopt interactivecomments
 
+# Enable agent forwarding when screen is reconnected
+# http://mokokko.hatenablog.com/entry/2013/03/14/133850
+AUTH_SOCK="$HOME/.ssh/.ssh-auth-sock"
+if [ -S "$AUTH_SOCK" ]; then
+    export SSH_AUTH_SOCK=$AUTH_SOCK
+elif [ ! -S "$SSH_AUTH_SOCK" ]; then
+    export SSH_AUTH_SOCK=$AUTH_SOCK
+elif [ ! -L "$SSH_AUTH_SOCK" ]; then
+    ln -snf "$SSH_AUTH_SOCK" $AUTH_SOCK && export SSH_AUTH_SOCK=$AUTH_SOCK
+fi
+
 # Emacs key bindings
 bindkey -e
 
