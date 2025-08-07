@@ -54,6 +54,13 @@ if is_mac ; then
   open "$(brew --prefix sfmono-square)/share/fonts/*"
 fi
 
+# Git configurations
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.cm commit
+git config --global alias.sw switch
+
 # Install sheldon
 if ! type sheldon > /dev/null 2>&1 ; then
   if is_mac ; then
