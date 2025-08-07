@@ -35,3 +35,20 @@ test -e $HOME/.config/op/plugins.sh && source $HOME/.config/op/plugins.sh
 # Whisper
 alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-large-v3.bin"
 
+# brew install実行時にBrewfileを自動更新する関数
+function brew() {
+  case "$1" in
+    install | i)
+      command brew "$@"
+      # インストール成功後、Brewfileを強制的に上書き更新
+      if [ $? -eq 0 ]; then
+        brew bundle dump --global --force --describe --file="~/Brewfile"
+        echo "Brewfile has been updated."
+      fi
+      ;;
+    *)
+      # install以外のコマンドは通常通り実行
+      command brew "$@"
+      ;;
+  esac
+}
