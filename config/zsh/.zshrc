@@ -55,7 +55,6 @@ function ghq-fzf() {
 zle -N ghq-fzf
 bindkey '^]' ghq-fzf
 
-
 function git-branch-fzf() {
   [ ! -d .git ] && return
   git branch --list | cut -c 3- \
@@ -64,6 +63,12 @@ function git-branch-fzf() {
 }
 zle -N git-branch-fzf
 bindkey '^[' git-branch-fzf
+
+function worktree-pr() {
+  git worktree add ./.git/worktree/pr/$1
+  cd ./.git/worktree/pr/$1
+  gh pr checkout $1
+}
 
 ###############################################################################
 
