@@ -1,2 +1,3 @@
 config/zsh/.zshrc.path.local
 config/zsh/.zshrc.local
+*.bak

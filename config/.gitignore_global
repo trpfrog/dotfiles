@@ -5,3 +5,9 @@
 out
 .git
 .python-version
+*.memo.md
+.cursorignore
+.solargraph.yml
+.npmrc
+mise.local.toml
+.tsmami/
