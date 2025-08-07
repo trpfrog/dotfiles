@@ -24,5 +24,6 @@ fi
 ################################################################
 
 if is_mac ; then
-  brew bundle --file=$DOTFILES_ROOT/config/Brewfile
+  ln -fs $DOTFILES_ROOT/config/Brewfile $HOME/.Brewfile
+  brew bundle
 fi
