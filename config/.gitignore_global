@@ -11,3 +11,4 @@ out
 .npmrc
 mise.local.toml
 .tsmami/
+.vscode/launch.json
