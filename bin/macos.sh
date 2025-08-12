@@ -32,6 +32,8 @@ defaults write com.apple.LaunchServices LSQuarantine -bool false
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 # .DS_Storeを外部ストレージに作らない
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+# 壁紙をクリックしてもデスクトップを表示させない
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 
 
 # [便利機能]
@@ -74,3 +76,5 @@ defaults write -g KeyRepeat -int 1
 
 # Tooltip表示高速化
 defaults write -g NSInitialToolTipDelay -int 100
+# ウィンドウをしまうエフェクトをスケールエフェクトにする
+defaults write com.apple.dock mineffect -string "scale"
