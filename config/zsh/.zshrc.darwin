@@ -38,7 +38,7 @@ alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-lar
 # brew install実行時にBrewfileを自動更新する関数
 function brew() {
   case "$1" in
-    install | i)
+    install | i | uninstall | remove | rm)
       command brew "$@"
       # インストール成功後、Brewfileを強制的に上書き更新
       if [ $? -eq 0 ]; then
