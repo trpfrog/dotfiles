@@ -42,7 +42,7 @@ function brew() {
       command brew "$@"
       # インストール成功後、Brewfileを強制的に上書き更新
       if [ $? -eq 0 ]; then
-        brew bundle dump --global --force --describe --file="~/Brewfile"
+        brew bundle dump --force --describe --file="~/Brewfile"
         echo "Brewfile has been updated."
       fi
       ;;
