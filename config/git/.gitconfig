@@ -1,0 +1,13 @@
+[core]
+    excludesfile = ~/dotfiles/config/git/.gitignore_global
+[alias]
+    force-push = push --force-with-lease --force-if-includes
+    amend = commit --amend
+    co = checkout
+    br = branch
+    sw = switch
+    cm = commit
+    undo-cm = reset --soft HEAD^
+[user]
+    name = tsmami
+    email = dev@trpfrog.net

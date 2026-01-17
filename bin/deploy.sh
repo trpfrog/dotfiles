@@ -15,8 +15,8 @@ done
 mkdir -p $HOME/.config/sheldon
 ln -fs $DOTFILES_ROOT/config/sheldon/plugins.toml $HOME/.config/sheldon
 
-# Apply global gitignore
-git config --global core.excludesfile $DOTFILES_ROOT/config/.gitignore_global
+# Include common .gitconfig
+git config --global --add include.path $DOTFILES_ROOT/config/git/.gitconfig
 
 # Xcode
 if is_mac ; then
