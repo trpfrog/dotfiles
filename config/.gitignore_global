@@ -12,3 +12,4 @@ out
 mise.local.toml
 .tsmami/
 .vscode/launch.json
+.claude/settings.local.json
