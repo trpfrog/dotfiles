@@ -4,14 +4,15 @@
 ###############################################################################
 
 # Homebrew
-export PATH="/opt/homebrew/bin:$PATH"
-export PATH="/opt/homebrew/sbin:$PATH"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+export PATH="$HOMEBREW_PREFIX/bin:$PATH"
+export PATH="$HOMEBREW_PREFIX/sbin:$PATH"
 
 # my own commands
 export PATH="$HOME/commands:$PATH"
 
 # C++ Libraries
-export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/opt/homebrew/include
+export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$HOMEBREW_PREFIX/include
 export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/Users/trpfrog/ac-library
 
 # OpenSSL
@@ -21,15 +22,8 @@ export PATH=$(brew --prefix openssl)/bin:$PATH
 export OPENBLAS=$(brew --prefix openblas)
 
 # OpenJDK
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export PATH="$HOMEBREW_PREFIX/opt/openjdk/bin:$PATH"
 
-# Mojo
-export MODULAR_HOME="/Users/trpfrog/.modular"
-export PATH="/Users/trpfrog/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
-
-# Homebrew
-export PATH="/opt/homebrew/bin:$PATH"
-export PATH="/opt/homebrew/sbin:$PATH"
 
 ## Homebrew curl
-export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+export PATH="$HOMEBREW_PREFIX/opt/curl/bin:$PATH"
