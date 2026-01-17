@@ -9,7 +9,7 @@
 # load path
 export DOTFILES_ROOT="$HOME/dotfiles"
 export DOTFILES_ZSH_DIR="$DOTFILES_ROOT/config/zsh"
-source $DOTFILES_ZSH_DIR/.zshrc.path
+source $DOTFILES_ZSH_DIR/.zshrc.env
 
 # Enable comment on interactive shell
 setopt interactivecomments
