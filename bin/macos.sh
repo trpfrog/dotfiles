@@ -1,80 +1,84 @@
 #!/usr/bin/env bash
 # Config
 
-# [テキストエディット]
+## テキストエディット
 
-# デフォルトをplainにする
+### デフォルトをplainにする
 defaults write com.apple.TextEdit RichText -bool false
 
 
-# [Finder]
+## Finder
 
-# Pathバーを表示
+### Pathバーを表示
 defaults write com.apple.finder ShowPathbar -bool true
 
 
-# [スクリーンショット]
+## スクリーンショット
 
-# 影を消す
+### 影を消す
 defaults write com.apple.screencapture disable-shadow -bool true
-# フローティングサムネイルを消す
+### フローティングサムネイルを消す
 defaults write com.apple.screencapture show-thumbnail -bool false
-# 保存場所の変更
+### 保存場所の変更
 mkdir ~/スクリーンショット
 defaults write com.apple.screencapture location ~/スクリーンショット
 
 
-# [お節介機能の解除]
+## お節介機能の解除
 
-# DLしたファイルからの警告を無視
+### DLしたファイルからの警告を無視
 defaults write com.apple.LaunchServices LSQuarantine -bool false
-# .DS_Storeをネットワークボリュームに作らない
+### .DS_Storeをネットワークボリュームに作らない
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-# .DS_Storeを外部ストレージに作らない
+### .DS_Storeを外部ストレージに作らない
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
-# 壁紙をクリックしてもデスクトップを表示させない
+### 壁紙をクリックしてもデスクトップを表示させない
 defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 
 
-# [便利機能]
+## 便利機能
 
-# QuickLookでテキストを選択可能に
+### QuickLookでテキストを選択可能に
 defaults write com.apple.finder QLEnableTextSelection -bool true
-# デフォルトで拡張子を表示
+### デフォルトで拡張子を表示
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
-# バッテリーパーセント表示
+### バッテリーパーセント表示
 defaults write com.apple.menuextra.battery ShowPercent -string "YES"
 
 
-# [マウス]
+## マウス
 
-# カーソルの速度
+### カーソルの速度
 defaults write com.apple.mouse.scaling -float 2.5
 
 
-# [キーボード]
+## キーボード
 
-# Capitalizeしない
+### Capitalizeしない
 defaults write -g NSAutomaticCapitalizationEnabled -bool false
-# スペルチェックしない
+### スペルチェックしない
 defaults write -g NSAutomaticSpellingCorrectionEnabled -bool false
-# アルファベット長押しで文字種の候補が出ないようにする
+### アルファベット長押しで文字種の候補が出ないようにする
 defaults write -g ApplePressAndHoldEnabled -bool false
-# スペースキー2回でピリオドが自動挿入されないようにする
+### スペースキー2回でピリオドが自動挿入されないようにする
 defaults write -g NSAutomaticPeriodSubstitutionEnabled -bool false
-# タイプミスの自動修正
+### タイプミスを自動修正しない
 defaults write com.apple.inputmethod.Kotoeri.JIMPrefAutocorrectionKey -bool false
-# 日本語モードでも半角数字を使う
+### 日本語モードでも半角数字を使う
 defaults write com.apple.inputmethod.Kotoeri.JIMPrefFullWidthNumeralCharactersKey -bool false
-# Shift を押したときにカタカナが入力されるようにする
+### Shift を押したときにカタカナが入力されるようにする
 defaults write com.apple.inputmethod.Kotoeri.JIMPrefShiftKeyActionKey -int 0
-# キーリピートの設定
+### キーリピートの設定
 defaults write -g InitialKeyRepeat -int 15
 defaults write -g KeyRepeat -int 1
 
-# [その他]
+## その他
 
-# Tooltip表示高速化
+### Tooltip表示高速化
 defaults write -g NSInitialToolTipDelay -int 100
-# ウィンドウをしまうエフェクトをスケールエフェクトにする
+### ウィンドウをしまうエフェクトをスケールエフェクトにする
 defaults write com.apple.dock mineffect -string "scale"
+### Window tiling したときの隙間を無くす
+defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+### メニューバーの時計に秒を表示
+defaults write com.apple.menuextra.clock ShowSeconds -bool true
