@@ -1,80 +1,55 @@
-#!/usr/bin/python3
-"""Load the coding signing key once, using 1Password as ssh-add's askpass."""
-import fcntl
+#!/usr/bin/env python3
+"""Load the coding signing key into the current standard SSH agent."""
 import os
 from pathlib import Path
-import socket
-import stat
+import shutil
 import subprocess
 import sys
 import time
 
-ROOT = Path.home()
-SOCKET_DIR = ROOT / '.ssh/agent-signing'
-SOCKET = SOCKET_DIR / 'agent.sock'
-KEY = ROOT / '.ssh/coding-agent-git-signing-key'
-ASKPASS = ROOT / '.local/bin/git-signing-passphrase'
+KEY = Path.home() / '.ssh/coding-agent-git-signing-key'
+ASKPASS = Path.home() / '.local/bin/git-signing-passphrase'
 
 
 def main():
     if sys.argv[1:] not in ([], ['--login']):
         raise RuntimeError('Usage: git-agent-unlock [--login]')
-    os.umask(0o077)
-    SOCKET_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
-    SOCKET_DIR.chmod(0o700)
-    with (SOCKET_DIR / 'unlock.lock').open('a') as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
-        probe = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        try:
-            probe.connect(str(SOCKET))
-        except FileNotFoundError:
-            start_agent = True
-        except ConnectionRefusedError:
-            if not stat.S_ISSOCK(SOCKET.lstat().st_mode):
-                raise RuntimeError('Unexpected file at the agent socket path')
-            SOCKET.unlink()
-            start_agent = True
-        else:
-            start_agent = False
-        finally:
-            probe.close()
-        if start_agent:
-            subprocess.run(
-                ['/usr/bin/ssh-agent', '-s', '-a', str(SOCKET)],
-                stdout=subprocess.DEVNULL, check=True,
-            )
-        if not KEY.is_file():
-            raise RuntimeError('Export the encrypted signing key from 1Password to ' + str(KEY))
-        env = os.environ.copy()
-        env['SSH_AUTH_SOCK'] = str(SOCKET)
-        fingerprint = subprocess.run(
-            ['/usr/bin/ssh-keygen', '-l', '-f', str(KEY) + '.pub'],
+    if not KEY.is_file():
+        raise RuntimeError('Export the encrypted signing key from 1Password to ' + str(KEY))
+    env = os.environ.copy()
+    # GUI login jobs normally inherit this from launchd. Ask launchd only if
+    # the variable is absent; never create or pin a separate agent/socket.
+    if not env.get('SSH_AUTH_SOCK') and sys.platform == 'darwin':
+        path = subprocess.run(
+            ['/bin/launchctl', 'getenv', 'SSH_AUTH_SOCK'],
             capture_output=True, text=True, check=True,
-        ).stdout.split()[1]
-        identities = subprocess.run(
-            ['/usr/bin/ssh-add', '-l'], env=env,
-            capture_output=True, text=True,
-        )
-        if identities.returncode == 0 and any(
-            len(parts) > 1 and parts[1] == fingerprint
-            for parts in (line.split() for line in identities.stdout.splitlines())
-        ):
-            print('Coding signing key is already loaded.')
-            return
-        if '--login' in sys.argv:
-            subprocess.run(
-                ['/usr/bin/open', '-gj', '-a', '/Applications/1Password.app'],
-                check=True,
-            )
-            time.sleep(5)
-        env['SSH_ASKPASS'] = str(ASKPASS)
-        env['SSH_ASKPASS_REQUIRE'] = 'force'
-        # The passphrase goes from op to ssh-add over the askpass pipe only.
-        subprocess.run(
-            ['/usr/bin/ssh-add', str(KEY)], env=env,
-            stdin=subprocess.DEVNULL, check=True,
-        )
-        print('Coding signing key loaded without a time limit.')
+        ).stdout.strip()
+        if path:
+            env['SSH_AUTH_SOCK'] = path
+    add = shutil.which('ssh-add')
+    keygen = shutil.which('ssh-keygen')
+    if not add or not keygen:
+        raise RuntimeError('OpenSSH ssh-add and ssh-keygen are required')
+    identities = subprocess.run([add, '-l'], env=env, capture_output=True, text=True)
+    if identities.returncode not in (0, 1):
+        raise RuntimeError('Cannot reach the standard SSH agent; check SSH_AUTH_SOCK')
+    fingerprint = subprocess.run(
+        [keygen, '-l', '-f', str(KEY) + '.pub'],
+        capture_output=True, text=True, check=True,
+    ).stdout.split()[1]
+    if identities.returncode == 0 and any(
+        len(parts) > 1 and parts[1] == fingerprint
+        for parts in (line.split() for line in identities.stdout.splitlines())
+    ):
+        print('Coding signing key is already loaded in the standard SSH agent.')
+        return
+    if '--login' in sys.argv and sys.platform == 'darwin':
+        subprocess.run(['/usr/bin/open', '-gj', '-a', '/Applications/1Password.app'], check=True)
+        time.sleep(5)
+    env['SSH_ASKPASS'] = str(ASKPASS)
+    env['SSH_ASKPASS_REQUIRE'] = 'force'
+    subprocess.run([add, str(KEY)], env=env, stdin=subprocess.DEVNULL, check=True)
+    print('Coding signing key loaded into the standard SSH agent without a time limit.')
 
 
 if __name__ == '__main__':

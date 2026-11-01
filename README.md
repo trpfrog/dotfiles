@@ -45,8 +45,8 @@ This script creates symbolic links to the home directory.
 
 ### Coding-agent commit signing (macOS)
 
-Agent-only signing helpers, Codex/Claude Code settings, and the login job are
-restored by `bin/coding-agent-signing install` (also run by `bin/deploy.sh`).
+Standard Git/SSH signing settings for Codex and Claude Code, key-loading
+helpers, and the macOS login job are restored by `bin/coding-agent-signing install` (also run by `bin/deploy.sh`).
 See [migration and key restoration instructions](config/agent-signing/README.md).
 Only the public key and 1Password reference are tracked; private keys,
 passphrases, and GitHub tokens remain outside this repository.

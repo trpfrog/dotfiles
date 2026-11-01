@@ -16,11 +16,15 @@ GIT_ENV = re.compile(r'^\s*(GIT_CONFIG_COUNT|GIT_CONFIG_(?:KEY|VALUE)_\d+)\s*=')
 
 
 def signing_env(home):
+    # Git supports a public key directly, so app settings need no local paths.
+    public = (ROOT / 'config/agent-signing/coding-agent-git-signing-key.pub').read_text().split()
+    if len(public) < 2 or not public[0].startswith(('ssh-', 'ecdsa-')):
+        raise RuntimeError('Invalid signing public key')
     pairs = [
         ('commit.gpgsign', 'true'),
         ('gpg.format', 'ssh'),
-        ('user.signingkey', str(home / '.ssh/coding-agent-git-signing-key.pub')),
-        ('gpg.ssh.program', str(home / '.local/bin/git-agent-sign')),
+        ('user.signingkey', 'key::' + ' '.join(public[:2])),
+        ('gpg.ssh.program', 'ssh-keygen'),
     ]
     env = {'GIT_CONFIG_COUNT': str(len(pairs))}
     for i, (key, value) in enumerate(pairs):
@@ -86,11 +90,14 @@ def install(home, no_launch):
         raise RuntimeError('A different coding-agent public key already exists')
     for path in [codex.parent, claude.parent, home / '.local/bin', home / '.ssh']:
         path.mkdir(parents=True, exist_ok=True)
-    for name in ['git-agent-sign', 'git-agent-unlock', 'git-signing-passphrase']:
+    for name in ['git-agent-unlock', 'git-signing-passphrase']:
         target = home / '.local/bin' / name
         if target.exists() or target.is_symlink():
             target.unlink()
         target.symlink_to(ROOT / 'bin' / name)
+    legacy_signer = home / '.local/bin/git-agent-sign'
+    if legacy_signer.is_symlink() and legacy_signer.resolve() == ROOT / 'bin/git-agent-sign':
+        legacy_signer.unlink()
     if installed_public.exists() or installed_public.is_symlink():
         installed_public.unlink()
     installed_public.symlink_to(public)
@@ -98,6 +105,11 @@ def install(home, no_launch):
     claude.write_text(json.dumps(settings, ensure_ascii=False, indent=2) + '\n')
     codex.chmod(0o600)
     claude.chmod(0o600)
+    if sys.platform != 'darwin':
+        if not no_launch:
+            print('Automatic login loading is macOS-only; run git-agent-unlock in your SSH agent session.')
+        print('Installed standard SSH signing settings for ' + str(home))
+        return
     logs = home / 'Library/Logs/CodingAgentSigning'
     logs.mkdir(parents=True, exist_ok=True)
     logs.chmod(0o700)
@@ -108,7 +120,6 @@ def install(home, no_launch):
         'ProgramArguments': [str(home / '.local/bin/git-agent-unlock'), '--login'],
         'RunAtLoad': True,
         'LimitLoadToSessionType': 'Aqua',
-        'AbandonProcessGroup': True,
         'EnvironmentVariables': {'PATH': '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'},
         'StandardOutPath': str(logs / 'startup.log'),
         'StandardErrorPath': str(logs / 'startup-error.log'),
