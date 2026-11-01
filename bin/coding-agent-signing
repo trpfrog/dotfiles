@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+"""Install coding-agent signing without copying private keys or other app settings."""
+import argparse
+import json
+import os
+from pathlib import Path
+import plistlib
+import re
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parent.parent
+LABEL = 'net.trpfrog.coding-agent-signing'
+TABLE = '[shell_environment_policy.set]'
+GIT_ENV = re.compile(r'^\s*(GIT_CONFIG_COUNT|GIT_CONFIG_(?:KEY|VALUE)_\d+)\s*=')
+
+
+def signing_env(home):
+    pairs = [
+        ('commit.gpgsign', 'true'),
+        ('gpg.format', 'ssh'),
+        ('user.signingkey', str(home / '.ssh/coding-agent-git-signing-key.pub')),
+        ('gpg.ssh.program', str(home / '.local/bin/git-agent-sign')),
+    ]
+    env = {'GIT_CONFIG_COUNT': str(len(pairs))}
+    for i, (key, value) in enumerate(pairs):
+        env['GIT_CONFIG_KEY_' + str(i)] = key
+        env['GIT_CONFIG_VALUE_' + str(i)] = value
+    return env
+
+
+def codex_config(current, env):
+    lines = current.splitlines(keepends=True)
+    starts = [i for i, line in enumerate(lines) if line.strip() == TABLE]
+    if len(starts) > 1:
+        raise RuntimeError('Duplicate Codex shell environment table')
+    if starts:
+        start = starts[0] + 1
+        end = next((i for i in range(start, len(lines))
+                    if lines[i].lstrip().startswith('[')), len(lines))
+        old = {}
+        kept = []
+        for line in lines[start:end]:
+            match = GIT_ENV.match(line)
+            if match:
+                old[match.group(1)] = json.loads(line.split('=', 1)[1].strip())
+            else:
+                kept.append(line)
+        if old:
+            if set(old) != set(env) or old['GIT_CONFIG_COUNT'] != '4' or any(
+                old['GIT_CONFIG_KEY_' + str(i)] != env['GIT_CONFIG_KEY_' + str(i)]
+                for i in range(4)
+            ):
+                raise RuntimeError('Existing Codex Git environment belongs to another configuration')
+        entries = ''.join(key + ' = ' + json.dumps(value) + '\n'
+                          for key, value in env.items())
+        before = ''.join(lines[:start] + kept)
+        return before.rstrip('\n') + '\n' + entries + ''.join(lines[end:])
+    # Do not create a duplicate table over an inline or quoted custom setting.
+    if re.search(r'^\s*(?:set\s*=|\[.*shell_environment_policy.*set.*\])', current, re.M):
+        raise RuntimeError('Custom Codex environment syntax requires a manual merge')
+    entries = ''.join(key + ' = ' + json.dumps(value) + '\n'
+                      for key, value in env.items())
+    return current.rstrip('\n') + '\n\n# Coding-agent signing (managed by dotfiles).\n' + TABLE + '\n' + entries
+
+
+def install(home, no_launch):
+    env = signing_env(home)
+    codex = home / '.codex/config.toml'
+    current = codex.read_text() if codex.exists() else ''
+    updated_codex = codex_config(current, env)
+    claude = home / '.claude/settings.json'
+    settings = json.loads(claude.read_text()) if claude.exists() else {}
+    old_env = settings.setdefault('env', {})
+    other = {k for k in old_env if k.startswith('GIT_CONFIG_')} - set(env)
+    if other or ('GIT_CONFIG_COUNT' in old_env and old_env['GIT_CONFIG_COUNT'] != '4'):
+        raise RuntimeError('Existing Claude Code Git environment requires a manual merge')
+    for i in range(4):
+        key = 'GIT_CONFIG_KEY_' + str(i)
+        if key in old_env and old_env[key] != env[key]:
+            raise RuntimeError('Existing Claude Code Git environment belongs to another configuration')
+    old_env.update(env)
+    public = ROOT / 'config/agent-signing/coding-agent-git-signing-key.pub'
+    installed_public = home / '.ssh/coding-agent-git-signing-key.pub'
+    if installed_public.exists() and installed_public.read_bytes() != public.read_bytes():
+        raise RuntimeError('A different coding-agent public key already exists')
+    for path in [codex.parent, claude.parent, home / '.local/bin', home / '.ssh']:
+        path.mkdir(parents=True, exist_ok=True)
+    for name in ['git-agent-sign', 'git-agent-unlock', 'git-signing-passphrase']:
+        target = home / '.local/bin' / name
+        if target.exists() or target.is_symlink():
+            target.unlink()
+        target.symlink_to(ROOT / 'bin' / name)
+    if installed_public.exists() or installed_public.is_symlink():
+        installed_public.unlink()
+    installed_public.symlink_to(public)
+    codex.write_text(updated_codex)
+    claude.write_text(json.dumps(settings, ensure_ascii=False, indent=2) + '\n')
+    codex.chmod(0o600)
+    claude.chmod(0o600)
+    logs = home / 'Library/Logs/CodingAgentSigning'
+    logs.mkdir(parents=True, exist_ok=True)
+    logs.chmod(0o700)
+    job = home / 'Library/LaunchAgents' / (LABEL + '.plist')
+    job.parent.mkdir(parents=True, exist_ok=True)
+    job.write_bytes(plistlib.dumps({
+        'Label': LABEL,
+        'ProgramArguments': [str(home / '.local/bin/git-agent-unlock'), '--login'],
+        'RunAtLoad': True,
+        'LimitLoadToSessionType': 'Aqua',
+        'AbandonProcessGroup': True,
+        'EnvironmentVariables': {'PATH': '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'},
+        'StandardOutPath': str(logs / 'startup.log'),
+        'StandardErrorPath': str(logs / 'startup-error.log'),
+    }))
+    job.chmod(0o600)
+    key = home / '.ssh/coding-agent-git-signing-key'
+    if not key.exists():
+        print('Export the encrypted OpenSSH private key from 1Password to ' + str(key))
+    if not no_launch:
+        domain = 'gui/' + str(os.getuid())
+        loaded = subprocess.run(['/bin/launchctl', 'print', domain + '/' + LABEL],
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if loaded.returncode == 0:
+            subprocess.run(['/bin/launchctl', 'bootout', domain + '/' + LABEL], check=True)
+        subprocess.run(['/bin/launchctl', 'bootstrap', domain, str(job)], check=True)
+    print('Installed coding-agent signing for ' + str(home))
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('command', choices=['install'])
+    parser.add_argument('--home', type=Path, default=Path.home(), help='Destination home directory')
+    parser.add_argument('--no-launch', action='store_true', help='Write settings without loading the login job')
+    args = parser.parse_args()
+    if args.home != Path.home() and not args.no_launch:
+        parser.error('--home requires --no-launch when targeting another home directory')
+    try:
+        install(args.home.resolve(), args.no_launch)
+    except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+        sys.exit(str(error))

@@ -32,6 +32,8 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # 1Password CLI
 test -e $HOME/.config/op/plugins.sh && source $HOME/.config/op/plugins.sh
+# Use gh native Keychain authentication while keeping other shell plugins.
+unalias gh 2>/dev/null
 # Whisper
 alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-large-v3.bin"
 

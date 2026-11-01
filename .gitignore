@@ -1,3 +1,6 @@
 config/zsh/.zshrc.env.local
 config/zsh/.zshrc.local
 *.bak
+
+# The encrypted signing private key must stay outside the repository.
+config/agent-signing/coding-agent-git-signing-key

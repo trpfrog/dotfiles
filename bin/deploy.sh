@@ -18,6 +18,11 @@ ln -fs $DOTFILES_ROOT/config/sheldon/plugins.toml $HOME/.config/sheldon
 # Include common .gitconfig
 git config --global --add include.path $DOTFILES_ROOT/config/git/.gitconfig
 
+# Restore agent-only signing helpers, app settings, and the login job.
+if is_mac ; then
+  "$DOTFILES_ROOT/bin/coding-agent-signing" install
+fi
+
 # Xcode
 if is_mac ; then
   # Change default template
