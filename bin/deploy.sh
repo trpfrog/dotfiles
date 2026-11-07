@@ -26,6 +26,16 @@ done
 mkdir -p $HOME/.config/sheldon
 ln -fs $DOTFILES_ROOT/config/sheldon/plugins.toml $HOME/.config/sheldon
 
+# コーディングエージェントの skill (skills/<名前>) を、入っているエージェントにだけリンクする
+# skill ごとにリンクするので、各エージェントの skills ディレクトリにある他の skill は残る
+for agent_dir in ~/.claude ~/.codex ; do
+  [[ -d $agent_dir ]] || continue
+  mkdir -p $agent_dir/skills
+  for skill in $DOTFILES_ROOT/skills/*(/N) ; do
+    ln -sfn $skill $agent_dir/skills/${skill:t}
+  done
+done
+
 # macOS の設定 (defaults write など)
 if [[ `uname` = "Darwin" ]] ; then
   bash "$DOTFILES_ROOT/bin/macos.sh"

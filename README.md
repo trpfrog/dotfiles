@@ -54,7 +54,27 @@ If the config has a problem, it stops before doing anything.
 
 This script creates symbolic links to the home directory, includes the shared `.gitconfig`,
 and writes `git.name` / `git.email` of the config to `~/.gitconfig`.
+It also links each coding-agent skill in `skills/<name>` into `~/.claude/skills` and `~/.codex/skills`,
+only for the agents whose directory exists. Other skills already in those directories are kept.
 It only does things that are safe on any machine.
+
+## 🧠 Agent skills
+
+`skills/` holds general-purpose agent skills, laid out as `skills/<name>/SKILL.md`
+following the [Agent Skills specification](https://agentskills.io/specification).
+
+| Skill | What it does |
+|---|---|
+| `diagram-for-review` | Draws Mermaid diagrams for code review, written so each node reads on its own |
+
+To use them without these dotfiles, install them with the GitHub CLI (preview) or the `skills` CLI:
+
+```sh
+gh skill install TrpFrog/dotfiles diagram-for-review --agent claude-code --scope user
+npx skills add TrpFrog/dotfiles --skill diagram-for-review -g
+```
+
+On machines with these dotfiles, `bin/deploy.sh` links them instead, so edits apply immediately.
 
 ## 🧩 Machine-specific settings
 
