@@ -31,6 +31,9 @@ fi
 # Default editor
 export EDITOR=vim
 
+# PATH の重複を消す (先頭に足すと、既にあるエントリは先頭へ移る)
+typeset -U path PATH
+
 # local
 export PATH="$HOME/.local/bin:$PATH"
 
