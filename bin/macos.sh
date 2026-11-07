@@ -20,7 +20,7 @@ defaults write com.apple.screencapture disable-shadow -bool true
 ### フローティングサムネイルを消す
 defaults write com.apple.screencapture show-thumbnail -bool false
 ### 保存場所の変更
-mkdir ~/スクリーンショット
+mkdir -p ~/スクリーンショット
 defaults write com.apple.screencapture location ~/スクリーンショット
 
 

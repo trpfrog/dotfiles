@@ -8,6 +8,4 @@
     sw = switch
     cm = commit
     undo-cm = reset --soft HEAD^
-[user]
-    name = tsmami
-    email = dev@trpfrog.net
+# user.name / user.email は端末ごとに ~/.gitconfig で設定する
