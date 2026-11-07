@@ -62,19 +62,18 @@ test -e $HOME/.config/op/plugins.sh && source $HOME/.config/op/plugins.sh
 # Use gh native Keychain authentication while keeping other shell plugins.
 unalias gh 2>/dev/null
 
-# brew install実行時にBrewfileを自動更新する関数
+# brew install / uninstall が成功したら Brewfile を自動で書き出す
+# 書き出し先: config.yaml の homebrew.brewfile、なければ ~/Brewfile
 function brew() {
+  local brewfile=$HOME/Brewfile
+  dotfiles_config_get_path homebrew.brewfile 2>/dev/null && brewfile=$REPLY
   case "$1" in
     install | i | uninstall | remove | rm)
-      command brew "$@"
-      # インストール成功後、Brewfileを強制的に上書き更新
-      if [ $? -eq 0 ]; then
-        brew bundle dump --force --file="$HOME/Brewfile"
-        echo "Brewfile has been updated."
-      fi
+      command brew "$@" || return
+      command brew bundle dump --force --file="$brewfile"
+      echo "Brewfile has been updated: $brewfile"
       ;;
     *)
-      # install以外のコマンドは通常通り実行
       command brew "$@"
       ;;
   esac
