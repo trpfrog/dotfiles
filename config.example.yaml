@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=./config.schema.json
+#
+# 端末ごとの設定。config.yaml にコピーして書き換える (config.yaml は git 管理外)。
+# lib/config.zsh が読める YAML のサブセットで書く: 2 スペースのインデント、入れ子は 2 段まで、
+# [a, b] のような 1 行の書き方は使えない (空のリスト [] だけは使える)。
+
+# install.sh が上から順に実行するインストール項目
+install:
+  - homebrew
+  - sheldon
+  - mise
+
+# brew bundle で読み込む Brewfile。推奨は ~/dotfiles/config/Brewfile
+# 別の端末のパッケージを誤って入れないよう、書いたときだけ使う
+# homebrew:
+#   brewfile: ~/dotfiles/config/Brewfile
+
+git:
+  name: your-name
+  email: "you@example.com"

@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "trpfrog/dotfiles config",
+  "description": "端末ごとの設定 (config.yaml)。lib/config.zsh が読める YAML のサブセットで書く: 2 スペースのインデント、入れ子は 2 段まで、リストは 1 行に 1 つの `- value` (空のリストだけ `[]` を使える)。",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "install": {
+      "title": "インストール項目",
+      "description": "install.sh が上から順に実行する項目 (install/<項目>.sh)。依存する項目より後に書く。",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "xcode-clt",
+            "description": "Xcode Command Line Tools (macOS)"
+          },
+          {
+            "const": "homebrew",
+            "description": "Homebrew (macOS)"
+          },
+          {
+            "const": "sfmono",
+            "description": "SF Mono Square フォント (macOS)。homebrew が必要"
+          },
+          {
+            "const": "sheldon",
+            "description": "zsh プラグインマネージャ。macOS では homebrew が必要"
+          },
+          {
+            "const": "mise",
+            "description": "ランタイムのバージョン管理。macOS では homebrew が必要"
+          },
+          {
+            "const": "fzf",
+            "description": "ファジーファインダー。macOS では homebrew が必要"
+          },
+          {
+            "const": "ghq",
+            "description": "リポジトリ管理。macOS では homebrew、Linux では mise が必要"
+          },
+          {
+            "const": "agent-signing",
+            "description": "Coding agent のコミット署名 (macOS)"
+          }
+        ]
+      }
+    },
+    "homebrew": {
+      "title": "Homebrew",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "brewfile": {
+          "title": "Brewfile のパス",
+          "description": "install.sh が brew bundle で読み込み、brew install / uninstall のたびに書き出す Brewfile。推奨は ~/dotfiles/config/Brewfile。別の端末のパッケージを誤って入れないよう、デフォルト値はなく、書いたときだけ使う。~/ はホームディレクトリ、相対パスは config.yaml のあるディレクトリから。存在するファイルを指す必要がある。",
+          "type": "string",
+          "examples": [
+            "~/dotfiles/config/Brewfile",
+            "~/Brewfile",
+            "Brewfile"
+          ]
+        }
+      }
+    },
+    "git": {
+      "title": "Git の ID",
+      "description": "deploy.sh が ~/.gitconfig の user.name / user.email に書き込む値。書かなければ変更しない。",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "user.name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "user.email"
+        }
+      }
+    }
+  }
+}

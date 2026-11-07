@@ -2,5 +2,8 @@
   "files.associations": {
     ".zshrc.*": "shellscript",
     ".zshenv.*": "shellscript"
+  },
+  "yaml.schemas": {
+    "./config.schema.json": ["config.yaml", "config.example.yaml"]
   }
 }

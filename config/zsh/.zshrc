@@ -3,12 +3,21 @@
 # このファイルでは特定の環境に依存しない設定を提供する。
 # Mac や Linux によって異なる設定は .zshrc.darwin や .zshrc.linux に記述する。
 # Git で管理しないローカル設定は、このディレクトリに .zshrc.local を作り記述する。
+# 端末ごとに選ぶ設定は、git 管理外の config.yaml に書く (lib/config.zsh で読み込む)。
 
 ###############################################################################
 
 # load path
 export DOTFILES_ROOT="$HOME/dotfiles"
 export DOTFILES_ZSH_DIR="$DOTFILES_ROOT/config/zsh"
+
+# 端末ごとの設定 ($DOTFILES_CONFIG か ~/dotfiles/config.yaml)
+# 不備があっても、シェルは起動できるように警告だけ出して続ける
+source $DOTFILES_ROOT/lib/config.zsh
+if ! dotfiles_config_load ; then
+  echo "dotfiles: config was not loaded; machine-specific settings are disabled" >&2
+  dotfiles_config=()
+fi
 
 ###############################################################################
 # 環境変数
