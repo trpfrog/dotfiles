@@ -20,6 +20,12 @@ if ! dotfiles_config_load ; then
 fi
 
 ###############################################################################
+# Claude Code (CLAUDECODE) か Codex (CODEX_THREAD_ID) のシェルなら IS_AI_AGENT=1
+if [[ -z $IS_AI_AGENT && ( -n $CLAUDECODE || -n $CODEX_THREAD_ID ) ]] ; then
+  export IS_AI_AGENT=1
+fi
+
+###############################################################################
 # 環境変数
 
 # Default editor
@@ -80,6 +86,9 @@ fi
 # Enable comment on interactive shell
 setopt interactivecomments
 
+# マッチしない glob はエラーにせずそのまま渡す (bash と同じ)
+setopt no_nomatch
+
 # Enable agent forwarding when screen is reconnected
 # http://mokokko.hatenablog.com/entry/2013/03/14/133850
 AUTH_SOCK="$HOME/.ssh/.ssh-auth-sock"
@@ -132,6 +141,16 @@ function worktree-pr() {
   cd ./.git/worktree/pr/$1
   gh pr checkout $1
 }
+
+###############################################################################
+
+# エージェントのシェルでは bash の書き方が通るようにする
+if [[ $IS_AI_AGENT == 1 ]] ; then
+  setopt sh_word_split  # 引用符なしの $var を空白で分割する
+  setopt no_equals      # 行頭の =cmd をコマンドのパスに展開しない
+  setopt no_bang_hist   # "!" を履歴展開しない
+  setopt bsd_echo       # echo は -e がなければバックスラッシュを解釈しない
+fi
 
 ###############################################################################
 
