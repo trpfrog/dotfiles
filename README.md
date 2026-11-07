@@ -67,6 +67,7 @@ following the [Agent Skills specification](https://agentskills.io/specification)
 |---|---|
 | `diagram-for-review` | Draws Mermaid diagrams for code review, written so each node reads on its own |
 | `review-comments` | Checks code comments in a change: written for future readers, not reviewers, and not repeating the code |
+| `prepare-push` | Runs the steps before pushing a branch in a fixed order, and keeps history intact once reviewers are assigned |
 
 To use them without these dotfiles, install them with the GitHub CLI (preview) or the `skills` CLI:
 
