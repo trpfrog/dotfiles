@@ -160,6 +160,21 @@ if [[ -n $TRPFROG_DOTFILES_AI_AGENT_TYPE ]] ; then
   setopt no_equals      # 行頭の =cmd をコマンドのパスに展開しない
   setopt no_bang_hist   # "!" を履歴展開しない
   setopt bsd_echo       # echo は -e がなければバックスラッシュを解釈しない
+
+  # コミットはエージェント専用の鍵で署名する (config/agent-signing/README.md)
+  # config.yaml の install に agent-signing がある端末だけ。git -c でそのコマンドにだけ設定を足す
+  # (Claude Code は .zshrc の環境変数を引き継がないが、関数は引き継ぐ)
+  dotfiles_config_list install
+  if (( ${reply[(Ie)agent-signing]} )) ; then
+    function git() {
+      command git \
+        -c commit.gpgsign=true \
+        -c gpg.format=ssh \
+        -c "user.signingkey=$HOME/.ssh/coding-agent-git-signing-key.pub" \
+        -c gpg.ssh.program=ssh-keygen \
+        "$@"
+    }
+  fi
 fi
 
 ###############################################################################

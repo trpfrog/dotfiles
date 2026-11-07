@@ -80,11 +80,12 @@ git:
 
 ### Coding-agent commit signing (macOS)
 
-Standard Git/SSH signing settings for Codex and Claude Code, key-loading
-helpers, and the macOS login job are restored by `bin/coding-agent-signing install` (also run by the `agent-signing` install item).
-See [migration and key restoration instructions](config/agent-signing/README.md).
-Only the public key and 1Password reference are tracked; private keys,
-passphrases, and GitHub tokens remain outside this repository.
+Commits from Claude Code and Codex shells are signed with an agent-only SSH key
+kept in 1Password (set in `.zshrc`). The key-loading helper and the macOS login job are restored
+by the `agent-signing` install item.
+See [setup instructions](config/agent-signing/README.md).
+Only the 1Password reference is tracked; private keys
+and GitHub tokens remain outside this repository.
 
 ### `bin/macos.sh`
 

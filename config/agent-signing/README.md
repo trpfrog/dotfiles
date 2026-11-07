@@ -1,86 +1,56 @@
 # Coding-agent commit signing
 
-Codex and Claude Code use standard Git SSH signing with the login session's
-OpenSSH agent. They select the agent-only public key directly with
-`user.signingkey = "key::ssh-ed25519 ..."` and use `gpg.ssh.program = "ssh-keygen"`.
-There is no custom signing executable, private SSH agent, or fixed socket path.
-Ordinary interactive Git retains its existing signing configuration.
+Commits made from Claude Code and Codex shells are signed with an agent-only
+SSH key through the login session's OpenSSH agent.
 
-## Restore on a new machine
+In a coding agent's shell (`TRPFROG_DOTFILES_AI_AGENT_TYPE` is set), when
+`install` in `config.yaml` includes `agent-signing`, `.zshrc` defines a `git`
+function that adds the signing settings with `git -c` to each call:
+`commit.gpgsign = true`, `gpg.format = ssh`,
+`user.signingkey = ~/.ssh/coding-agent-git-signing-key.pub`, and
+`gpg.ssh.program = ssh-keygen`. Claude Code does not pass environment variables
+from `.zshrc` to its commands, but it does pass shell functions. No app settings
+are changed. Only `git` run from the agent's shell is affected; Git run directly
+by another program is not.
 
-1. Install Git 2.34+, an OpenSSH version supporting SSH signatures, Python 3,
+The key stays in 1Password (**MBP Coding Agent Signing Key** in the Private
+vault). `git-agent-unlock` pipes the private key from `op read` straight into
+`ssh-add -`, so it is never written to disk, and writes the public key to
+`~/.ssh/coding-agent-git-signing-key.pub`. Register that public key once as a
+**Signing key** on GitHub so the commits show as Verified.
+
+## Set up a new machine (macOS)
+
+1. Install Git 2.34+, an OpenSSH version supporting SSH signatures,
    1Password, and 1Password CLI. Sign in and enable 1Password CLI integration.
-2. Open **MBP Coding Agent Signing Key** in the Private vault. Export its private
-   key as **OpenSSH**, using **Download Encrypted Key** and the passphrase in
-   **Exported Passphrases** referenced by `settings.json`. Save it to
-   `~/.ssh/coding-agent-git-signing-key`, then run:
+2. Add `agent-signing` to `install` in `config.yaml` and run `install.sh`.
+3. Approve the 1Password request, and restart Codex and Claude Code so their
+   shells read the new `.zshrc`. To load the key manually, run `git-agent-unlock`.
 
-   ```sh
-   chmod 600 ~/.ssh/coding-agent-git-signing-key
-   ```
+To turn it off on a machine, leave `agent-signing` out of `config.yaml`.
 
-   Keep the key encrypted and outside this repository. Its public key is tracked
-   here; reusing the key does not require a new GitHub registration.
-3. On macOS, deploy the dotfiles normally, or install only this setup:
+## What the install item does
 
-   ```sh
-   ~/dotfiles/bin/coding-agent-signing install
-   ```
-
-   On Linux, run the same installer with `--no-launch` from an existing SSH
-   agent session. It installs app settings and helpers, but no macOS login job.
-   Use your desktop/session manager's standard SSH agent; this setup does not
-   start an additional agent.
-4. Approve the 1Password request if one appears, and restart Codex and Claude
-   Code. To load the key manually using 1Password, run `git-agent-unlock`.
-   Ordinary `ssh-add ~/.ssh/coding-agent-git-signing-key` works too, and prompts
-   for the passphrase interactively.
-
-## Standard app settings
-
-The installer merges only standard Git environment variables
-(`GIT_CONFIG_COUNT`, `GIT_CONFIG_KEY_n`, and `GIT_CONFIG_VALUE_n`) into the apps'
-normal environment settings:
-
-- Codex: `[shell_environment_policy.set]` in `~/.codex/config.toml`.
-- Claude Code: `env` in `~/.claude/settings.json`.
-
-Both get identical values. No home paths or SSH agent socket paths are written
-into these settings, and no aliases or agent-specific hooks are required.
-The explicit `ssh-keygen` value overrides interactive Git's 1Password signer.
-Other settings, hooks, and permissions remain untouched. The shared Codex
-config remains independently managed by `bin/codex-config`.
-
-The installer links only the two loading helpers into `~/.local/bin` and links
-the public key into `~/.ssh`. On macOS, it generates and loads
-`~/Library/LaunchAgents/net.trpfrog.coding-agent-signing.plist` for login-time
-loading. `--no-launch` writes settings without loading the job. Reinstallation
-also migrates the earlier dedicated-signer settings and removes its symlink.
+`install/agent-signing.sh` links `git-agent-unlock` into `~/.local/bin`, and
+copies and loads `net.trpfrog.coding-agent-signing.plist` into
+`~/Library/LaunchAgents`, which runs `git-agent-unlock --login` at login.
+It does not need 1Password CLI. Running it again is safe.
 
 ## Loading and lifecycle
 
-`settings.json` stores only a 1Password secret reference, never the passphrase.
-The askpass helper passes the value directly from `op read` to `ssh-add`; do not
-run `git-signing-passphrase` directly, since its stdout is the passphrase.
-No passphrase is placed in command arguments, environment variables, or logs.
+The key is loaded once per login. If it is already loaded, nothing happens.
+Otherwise the login job opens 1Password and reads the key, which needs your
+approval. If that fails, the job does not retry; run `git-agent-unlock` after
+resolving it. Login status and errors are in
+`~/Library/Logs/coding-agent-signing.log`.
 
-Loading uses the inherited `SSH_AUTH_SOCK`. macOS login jobs normally inherit
-the standard socket from launchd; if absent, the login loader asks launchd for
-it. No socket is hardcoded or written into app settings. Codex and Claude Code
-must inherit access to that same standard agent. Agent forwarding is neither
-needed nor enabled.
+Loading uses the `SSH_AUTH_SOCK` that the login job inherits from launchd.
+Agent shells must use that same standard agent.
 
-An already-loaded key is left alone. Otherwise the login loader opens
-1Password on macOS and requests the stored passphrase. If 1Password is not
-ready, access is denied, the agent is unavailable, or the key has not been
-restored, the job fails once without repeatedly prompting. Run
-`git-agent-unlock` after resolving it. Non-secret login status/errors are under
-`~/Library/Logs/CodingAgentSigning/` on macOS.
-
-No key lifetime is requested. With the macOS standard agent's default settings,
-the key remains loaded until removed or the agent exits. Locking the Mac or
-1Password does not unload it. Same-user processes with access to the standard
-agent can use loaded keys. Remove only the coding key with:
+No key lifetime is requested, so the key remains loaded until removed or the
+agent exits. Locking the Mac or 1Password does not unload it. Same-user
+processes with access to the standard agent can use loaded keys. Remove only
+the coding key with:
 
 ```sh
 ssh-add -d ~/.ssh/coding-agent-git-signing-key.pub

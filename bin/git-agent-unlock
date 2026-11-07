@@ -1,60 +1,29 @@
-#!/usr/bin/env python3
-"""Load the coding signing key into the current standard SSH agent."""
-import os
-from pathlib import Path
-import shutil
-import subprocess
-import sys
-import time
+#!/bin/zsh -f
+# Coding agent の署名鍵を 1Password から読み、標準の SSH エージェントに読み込む。
+# 秘密鍵はディスクに書かず、op read から ssh-add へ直接渡す。
+# 公開鍵は Git の user.signingkey が参照するので ~/.ssh に書き出す。
+#   git-agent-unlock          手動で読み込む
+#   git-agent-unlock --login  ログイン時の LaunchAgent から呼ぶ (先に 1Password を起動する)
+set -eu -o pipefail
 
-KEY = Path.home() / '.ssh/coding-agent-git-signing-key'
-ASKPASS = Path.home() / '.local/bin/git-signing-passphrase'
+item='op://Private/fazqcsykg7yxfudwhlry4v62e4'
+pub=~/.ssh/coding-agent-git-signing-key.pub
 
+# 呼び出し元が 1Password の SSH エージェントを指していても、launchd の標準のエージェントに読み込む
+export SSH_AUTH_SOCK=$(launchctl getenv SSH_AUTH_SOCK)
 
-def main():
-    if sys.argv[1:] not in ([], ['--login']):
-        raise RuntimeError('Usage: git-agent-unlock [--login]')
-    if not KEY.is_file():
-        raise RuntimeError('Export the encrypted signing key from 1Password to ' + str(KEY))
-    env = os.environ.copy()
-    # GUI login jobs normally inherit this from launchd. Ask launchd only if
-    # the variable is absent; never create or pin a separate agent/socket.
-    if not env.get('SSH_AUTH_SOCK') and sys.platform == 'darwin':
-        path = subprocess.run(
-            ['/bin/launchctl', 'getenv', 'SSH_AUTH_SOCK'],
-            capture_output=True, text=True, check=True,
-        ).stdout.strip()
-        if path:
-            env['SSH_AUTH_SOCK'] = path
-    add = shutil.which('ssh-add')
-    keygen = shutil.which('ssh-keygen')
-    if not add or not keygen:
-        raise RuntimeError('OpenSSH ssh-add and ssh-keygen are required')
-    identities = subprocess.run([add, '-l'], env=env, capture_output=True, text=True)
-    if identities.returncode not in (0, 1):
-        raise RuntimeError('Cannot reach the standard SSH agent; check SSH_AUTH_SOCK')
-    fingerprint = subprocess.run(
-        [keygen, '-l', '-f', str(KEY) + '.pub'],
-        capture_output=True, text=True, check=True,
-    ).stdout.split()[1]
-    if identities.returncode == 0 and any(
-        len(parts) > 1 and parts[1] == fingerprint
-        for parts in (line.split() for line in identities.stdout.splitlines())
-    ):
-        print('Coding signing key is already loaded in the standard SSH agent.')
-        return
-    if '--login' in sys.argv and sys.platform == 'darwin':
-        subprocess.run(['/usr/bin/open', '-gj', '-a', '/Applications/1Password.app'], check=True)
-        time.sleep(5)
-    env['SSH_ASKPASS'] = str(ASKPASS)
-    env['SSH_ASKPASS_REQUIRE'] = 'force'
-    subprocess.run([add, str(KEY)], env=env, stdin=subprocess.DEVNULL, check=True)
-    print('Coding signing key loaded into the standard SSH agent without a time limit.')
+if ssh-add -T "$pub" 2>/dev/null ; then
+  echo 'Coding signing key is already loaded.'
+  exit 0
+fi
 
-
-if __name__ == '__main__':
-    try:
-        main()
-    except (OSError, RuntimeError, subprocess.SubprocessError) as error:
-        print('Could not load the coding signing key: ' + str(error), file=sys.stderr)
-        sys.exit(1)
+if [[ ${1:-} == --login ]] ; then
+  open -gj -a 1Password
+  sleep 5
+fi
+mkdir -p ~/.ssh
+# 一時ファイルに書いてから置き換える (失敗しても今のファイルを壊さず、古いシンボリックリンクも置き換える)
+op read "$item/public key" > "$pub.tmp"
+mv -f "$pub.tmp" "$pub"
+op read "$item/private_key?ssh-format=openssh" | ssh-add -q -
+echo 'Coding signing key loaded without a time limit.'
