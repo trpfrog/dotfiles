@@ -9,7 +9,61 @@
 # load path
 export DOTFILES_ROOT="$HOME/dotfiles"
 export DOTFILES_ZSH_DIR="$DOTFILES_ROOT/config/zsh"
-source $DOTFILES_ZSH_DIR/.zshrc.env
+
+###############################################################################
+# 環境変数
+
+# Default editor
+export EDITOR=vim
+
+# local
+export PATH="$HOME/.local/bin:$PATH"
+
+# Rust
+export PATH="$HOME/.cargo/env:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Go
+export GOPATH=$HOME/go
+export PATH="$GOPATH/bin:$PATH"
+
+# Deno
+export PATH="$HOME/.deno/bin:$PATH"
+
+# zsh
+export ZDOTDIR=${ZDOTDIR:-$HOME}
+
+# Secrets (平文で書かず、1Password の参照を書く)
+export OPENAI_API_KEY="op://Private/OpenAI API Key/credential"
+
+###############################################################################
+
+# 環境ごとの設定 (.zshrc.darwin, .zshrc.linux)
+# Homebrew などの PATH を含むので、コマンドを使う設定より前に読み込む
+UNAME_LOWERCASE=${$(uname):l}
+[ -f $DOTFILES_ZSH_DIR/.zshrc.$UNAME_LOWERCASE ] && source $DOTFILES_ZSH_DIR/.zshrc.$UNAME_LOWERCASE
+
+###############################################################################
+
+# Pure
+export PURE_PROMPT_SYMBOL="${PURE_DISPLAY_ENV_NAME:+%f%B${PURE_DISPLAY_ENV_NAME}%b }%B%F{3}❯%F{2}❯%F{6}❯%f%b"
+
+# mise
+if type mise > /dev/null 2>&1 ; then
+  eval "$(mise activate zsh --shims)"
+  if [[ -o interactive ]] ; then
+    eval "$(mise activate zsh)"
+  fi
+fi
+
+# Vite+ (https://viteplus.dev)
+# 自身の bin を PATH の先頭に移すので、他の PATH 設定より後に読み込む
+[ -f "$HOME/.vite-plus/env" ] && . "$HOME/.vite-plus/env"
+
+# GHCup (Haskell)
+[ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
+
+###############################################################################
 
 # Enable comment on interactive shell
 setopt interactivecomments
@@ -30,9 +84,6 @@ bindkey -e
 
 # sheldon
 eval "$(sheldon source)"
-
-# GHCup (Haskell)
-[ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
 
 alias git-rsync='rsync -avz -C --filter=":- .gitignore" --exclude ".git" --exclude-from ~/dotfiles/.gitignore_global --verbose'
 
@@ -73,11 +124,6 @@ function worktree-pr() {
 ###############################################################################
 
 # git 管理しないローカル設定 ($ZDOTDIR とこのディレクトリのどちらに置いても良い)
+# 他の設定を上書きできるよう最後に読み込む
 [ -f $DOTFILES_ZSH_DIR/.zshrc.local ] && source $DOTFILES_ZSH_DIR/.zshrc.local
 [ -f $ZDOTDIR/.zshrc.local ] && source $ZDOTDIR/.zshrc.local
-
-# 環境ごとの設定 (.zshrc.darwin, .zshrc.linux)
-UNAME_LOWERCASE=${$(uname):l}
-[ -f $DOTFILES_ZSH_DIR/.zshrc.$UNAME_LOWERCASE ] && source $DOTFILES_ZSH_DIR/.zshrc.$UNAME_LOWERCASE
-
-###############################################################################

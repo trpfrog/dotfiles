@@ -25,8 +25,8 @@ fi
 DOTFILES_ROOT="$HOME/dotfiles"
 source $DOTFILES_ROOT/bin/deploy.sh
 
-# Load environment variables
-source $DOTFILES_ROOT/config/zsh/.zshrc.env
+# Minimal environment variables needed during installation
+export PATH="$HOME/.local/bin:$PATH"
 
 # Xcode Command Line Tools
 if is_mac ; then
@@ -40,6 +40,7 @@ if is_mac ; then
   if ! type brew > /dev/null 2>&1 ; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 # Update apt
