@@ -12,5 +12,7 @@ out
 mise.local.toml
 .tsmami/
 .vscode/launch.json
+.codex/worktrees/
+.claude/worktrees/
 .claude/settings.local.json
 .serena/
