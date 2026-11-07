@@ -5,7 +5,7 @@
 # 環境変数
 
 # Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+[ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH="$HOMEBREW_PREFIX/bin:$PATH"
 export PATH="$HOMEBREW_PREFIX/sbin:$PATH"
 
@@ -14,13 +14,13 @@ export PATH="$HOME/commands:$PATH"
 
 # C++ Libraries
 export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$HOMEBREW_PREFIX/include
-export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/Users/trpfrog/ac-library
+export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:$HOME/ac-library
 
 # OpenSSL
-export PATH=$(brew --prefix openssl)/bin:$PATH
+export PATH="$HOMEBREW_PREFIX/opt/openssl/bin:$PATH"
 
 # Needed to install SciPy on M1 Mac using pip
-export OPENBLAS=$(brew --prefix openblas)
+export OPENBLAS="$HOMEBREW_PREFIX/opt/openblas"
 
 # OpenJDK
 export PATH="$HOMEBREW_PREFIX/opt/openjdk/bin:$PATH"
@@ -61,8 +61,6 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 test -e $HOME/.config/op/plugins.sh && source $HOME/.config/op/plugins.sh
 # Use gh native Keychain authentication while keeping other shell plugins.
 unalias gh 2>/dev/null
-# Whisper
-alias whisper="~/GitHub/whisper.cpp/main -m ~/GitHub/whisper.cpp/models/ggml-large-v3.bin"
 
 # brew install実行時にBrewfileを自動更新する関数
 function brew() {

@@ -63,6 +63,9 @@ fi
 # GHCup (Haskell)
 [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
 
+# whisper.cpp (~/GitHub/whisper.cpp でビルドしたもの)
+[ -x "$HOME/GitHub/whisper.cpp/main" ] && alias whisper="$HOME/GitHub/whisper.cpp/main -m $HOME/GitHub/whisper.cpp/models/ggml-large-v3.bin"
+
 ###############################################################################
 
 # Enable comment on interactive shell
@@ -83,7 +86,7 @@ fi
 bindkey -e
 
 # sheldon
-eval "$(sheldon source)"
+command -v sheldon > /dev/null 2>&1 && eval "$(sheldon source)"
 
 alias git-rsync='rsync -avz -C --filter=":- .gitignore" --exclude ".git" --exclude-from ~/dotfiles/.gitignore_global --verbose'
 
