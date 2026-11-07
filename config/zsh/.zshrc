@@ -20,9 +20,16 @@ if ! dotfiles_config_load ; then
 fi
 
 ###############################################################################
-# Claude Code (CLAUDECODE) か Codex (CODEX_THREAD_ID) のシェルなら IS_AI_AGENT=1
-if [[ -z $IS_AI_AGENT && ( -n $CLAUDECODE || -n $CODEX_THREAD_ID ) ]] ; then
-  export IS_AI_AGENT=1
+# コーディングエージェントのシェルなら TRPFROG_DOTFILES_AI_AGENT_TYPE にその種類を入れる (claude / codex)
+# 普段のシェルでは未設定
+# 見る変数は is-ai-agent などの判定ライブラリに合わせる。
+# Codex Desktop はシェルのスナップショットを取るときに CODEX_SHELL だけを設定するので、それも見る
+if [[ -z $TRPFROG_DOTFILES_AI_AGENT_TYPE ]] ; then
+  if [[ -n $CLAUDECODE || -n $CLAUDE_CODE ]] ; then
+    export TRPFROG_DOTFILES_AI_AGENT_TYPE=claude
+  elif [[ -n $CODEX_SHELL || -n $CODEX_THREAD_ID || -n $CODEX_SANDBOX || -n $CODEX_CI ]] ; then
+    export TRPFROG_DOTFILES_AI_AGENT_TYPE=codex
+  fi
 fi
 
 ###############################################################################
@@ -148,7 +155,7 @@ function worktree-pr() {
 ###############################################################################
 
 # エージェントのシェルでは bash の書き方が通るようにする
-if [[ $IS_AI_AGENT == 1 ]] ; then
+if [[ -n $TRPFROG_DOTFILES_AI_AGENT_TYPE ]] ; then
   setopt sh_word_split  # 引用符なしの $var を空白で分割する
   setopt no_equals      # 行頭の =cmd をコマンドのパスに展開しない
   setopt no_bang_hist   # "!" を履歴展開しない
